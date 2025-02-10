@@ -1,5 +1,8 @@
 import express from 'express';
 import morgan from 'morgan';
+import connect from './db/db.js';
+
+connect();
 
 //App installation
 const app=express()
