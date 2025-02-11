@@ -32,6 +32,14 @@ export const loginController=async(req,res)=>{
 
 const {email,password}=req.body;
 
+const user=await userModel.findOne({email});
+
+if(!user){
+    res.status(402).json({
+        errors:'Invalid credentials'
+    })
+}
+
 
     }catch(err){
         res.status(400).send(err.message);
