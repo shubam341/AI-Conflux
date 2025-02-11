@@ -22,3 +22,18 @@ export const createUserController=async(req,res)=>{
                }                
 }
 
+export const loginController=async(req,res)=>{
+    const errors=validationResult(req);
+
+    if(!errors.isEmpty()){
+        return res.status(400).json({errors:errors.array()})
+    }
+    try{
+
+const {email,password}=req.body;
+
+
+    }catch(err){
+        res.status(400).send(err.message);
+    }
+}
