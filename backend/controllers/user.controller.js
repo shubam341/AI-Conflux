@@ -33,7 +33,7 @@ export const loginController=async(req,res)=>{
         //Checking if User exits or not
 const {email,password}=req.body;
 
-const user=await userModel.findOne({email});
+const user=await userModel.findOne({email}).select('+password');
 
 if(!user){
     return res.status(401).json({
