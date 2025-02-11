@@ -14,7 +14,8 @@ router.post('/register',
     body('email').isEmail().withMessage('Email must be a valid email address'),
     body('password').isLength({min:4}).withMessage('Password must be atleast 4 charcter long'),
     userController.loginController);
-     
+
+    router.post('/login',userController.ProfileController);
 
 
 export default router;

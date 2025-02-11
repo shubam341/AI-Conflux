@@ -60,3 +60,7 @@ res.status(200).json({user,token});
         res.status(400).send(err.message);
     }
 }
+
+export const ProfileController=async(req,res)=>{
+    
+}
