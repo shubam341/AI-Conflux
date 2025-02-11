@@ -30,12 +30,22 @@ export const loginController=async(req,res)=>{
     }
     try{
 
+        //Checking if User exits or not
 const {email,password}=req.body;
 
 const user=await userModel.findOne({email});
 
 if(!user){
-    res.status(402).json({
+    return res.status(401).json({
+        errors:'Invalid credentials'
+    })
+}
+
+//IF user exist
+const isMatch=await user.isValidPassword(password);
+
+if(!isMatch){
+    return res.status(401).json({
         errors:'Invalid credentials'
     })
 }
