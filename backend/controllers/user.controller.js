@@ -78,6 +78,10 @@ export const logoutController =async(req,res)=>{
 
         redisClient.set(token,'logout','EX',60*60*24)
 
+        res.status(200).json({
+            message:'logged out successfully'
+        })
+
     }catch(err){
         console.log(err);
         res.status(400).send(err.message);
