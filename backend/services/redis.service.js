@@ -7,3 +7,5 @@ const redisClient=new Redis({
     port:process.env.REDIS_PASSWORD,
     password:process.env.REDIS_PASSWORD
 })
+
+//for redis connectiom
