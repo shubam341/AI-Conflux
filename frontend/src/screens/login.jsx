@@ -10,12 +10,25 @@ const Login = () => {
   const [email,setEmail]=useState('')
   const [password,setPassword]=useState('')
 
+  //Creating submit handler
+  function submitHandler(e){
+    axios.post('/login',{
+      email,
+      password
+    }).then((res)=>{
+      console.assertlog(res.data)
+    }).catch((err)=>{
+      console.log(err.response.data)
+    })
+  }
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-gray-900 p-4'>
       <div className='bg-gray-800 p-8 rounded-2xl  shadow-2xl w-full max-w-md'>
         <h2 className='text-3xl font-bold text-white mb-8 text-center'>Login</h2>
-        <form>
+        <form
+        onSubmit={submitHandler}
+        >
 
 
           <div className='mb-6'>
