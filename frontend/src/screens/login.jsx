@@ -23,7 +23,7 @@ const Login = () => {
       email,
       password 
     }).then((res)=>{
-      console.assertlog(res.data)
+      console.log(res.data)
       navigate('/')
     }).catch((err)=>{
       console.log(err.response.data)
