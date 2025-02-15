@@ -1,14 +1,18 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-unused-vars */
-import React ,{useState} from 'react';
+import React ,{useContext, useState} from 'react';
 import { Link ,useNavigate} from 'react-router-dom';     //using usenavigate to render prsn from login to home
 import axios from '../config/axios'
+import {UserContext}  from '../context/user.context'
 
 
 const Login = () => {
 
   const [email,setEmail]=useState('')
   const [password,setPassword]=useState('')
+
+  //Using user context
+  const{setUser}=useContext(UserContext)
 
   //creating Navigate
   const navigate=useNavigate()
