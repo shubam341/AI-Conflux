@@ -9,6 +9,25 @@ const Register = () => {
   const [email,setEmail]=useState('')
   const [password,setPassword]=useState('')
 
+   //creating Navigate
+    const navigate=useNavigate()
+
+  //Creating submit handler
+  function submitHandler(e){
+
+    e.preventDefault()
+
+    axios.post('/register',{
+      email,
+      password
+    }).then((res)=>{
+      console.assertlog(res.data)
+     navigate('/')
+    }).catch((err)=>{
+      console.log(err.response.data)
+    })
+  }
+
   return (
     <div className='min-h-screen flex items-center justify-center bg-gray-900 p-4'>
       <div className='bg-gray-800 p-8 rounded-2xl  shadow-2xl w-full max-w-md'>

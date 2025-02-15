@@ -16,6 +16,9 @@ const Login = () => {
 
   //Creating submit handler
   function submitHandler(e){
+
+    e.preventDefault()
+
     axios.post('/login',{
       email,
       password
