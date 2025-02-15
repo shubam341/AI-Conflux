@@ -20,11 +20,15 @@ const Register = () => {
       email,
       password
     }).then((res)=>{
-      console.assertlog(res.data)
+      console.log(res.data)
      navigate('/')
-    }).catch((err)=>{
-      console.log(err.response.data)
-    })
+    }).catch((err) => {
+        if (err.response) {
+          console.log(err.response.data);
+        } else {
+          console.log(err.message);
+        }
+      })
   }
 
   return (

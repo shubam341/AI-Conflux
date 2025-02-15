@@ -19,9 +19,9 @@ const Login = () => {
 
     e.preventDefault()
 
-    axios.post('/login',{
+    axios.post('/users/login',{
       email,
-      password
+      password 
     }).then((res)=>{
       console.assertlog(res.data)
       navigate('/')
