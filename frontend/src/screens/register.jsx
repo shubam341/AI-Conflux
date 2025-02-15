@@ -16,7 +16,7 @@ const Register = () => {
 
           <div className='mb-6'>
             <label className='block text-gray-400 mb-2' htmlFor="password">Password</label>
-            <input type="password" id="password" className='w-full px-4 py-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500' required/>
+            <input type="password" id="password" className='w-full px-4 py-3  rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500' required/>
           </div>
 
           <button type='submit' className='w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-200'>Register</button>
