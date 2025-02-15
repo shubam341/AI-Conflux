@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-unused-vars */
 import React ,{useState} from 'react';
-import { Link } from 'react-router-dom'; 
+import { Link ,useNavigate} from 'react-router-dom';     //using usenavigate to render prsn from login to home
 import axios from '../config/axios'
 
 
@@ -10,6 +10,10 @@ const Login = () => {
   const [email,setEmail]=useState('')
   const [password,setPassword]=useState('')
 
+  //creating Navigate
+  const navigate=useNavigate()
+
+
   //Creating submit handler
   function submitHandler(e){
     axios.post('/login',{
@@ -17,6 +21,7 @@ const Login = () => {
       password
     }).then((res)=>{
       console.assertlog(res.data)
+      navigate('/')
     }).catch((err)=>{
       console.log(err.response.data)
     })
@@ -42,7 +47,7 @@ const Login = () => {
           <div className='mb-6'>
             <label className='block text-gray-400 mb-2' htmlFor="password">Password</label>
             <input
-               onChange={(e)=>setEmail(e.target.value)}
+               onChange={(e)=>setPassword(e.target.value)}
             type="password" id="password" className='w-full px-4 py-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500' required/>
           </div>
 
