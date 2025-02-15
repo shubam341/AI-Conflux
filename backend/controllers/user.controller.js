@@ -15,6 +15,9 @@ export const createUserController=async(req,res)=>{
                try{
                 const user=await userService.createUser(req.body);
                 const token=await user.generateJWT();
+
+  delete user._doc.password;  //to save password in backend
+
                 res.status(201).json({user,token});
 
 
