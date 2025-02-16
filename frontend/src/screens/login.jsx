@@ -3,16 +3,18 @@
 import React ,{useContext, useState} from 'react';
 import { Link ,useNavigate} from 'react-router-dom';     //using usenavigate to render prsn from login to home
 import axios from '../config/axios'
-import { UserContext } from "../context/user.context.jsx";
+import { UserContext } from "../context/user.context";
 
 
 const Login = () => {
+
+  
 
   const [email,setEmail]=useState('')
   const [password,setPassword]=useState('')
 
   //Using user context
-  const{setUser}=useContext(UserContext)
+  const{ setUser }=useContext(UserContext)
 
   //creating Navigate
   const navigate=useNavigate()
@@ -29,8 +31,9 @@ const Login = () => {
     }).then((res)=>{
       console.log(res.data)
 
-      localStorage.setItem('token',res.data.token)
-      setUser(res.data.user)
+      localStorage.setItem('token', JSON.stringify(res.data.user));
+      setUser(res.data.user);
+      
 
       navigate('/')
     }).catch((err)=>{

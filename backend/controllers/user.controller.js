@@ -59,6 +59,7 @@ const token=await user.generateJWT();
 
 res.status(200).json({user,token});
 
+delete user._doc.password;
 
     }catch(err){
         res.status(400).send(err.message);
