@@ -12,4 +12,13 @@ export const createProject=async({
         throw new Error('User is required')
     }
     
+//creating project 
+
+const project=await projectModel.create({
+    name,
+    users:[userId]
+})
+
+return project;
+
 }
