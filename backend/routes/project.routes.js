@@ -1,6 +1,6 @@
 import {Router} from 'express'
 import {body} from 'express-validator'
-import * as projectController from '../controllers/project.controller'
+import * as projectController from '../controllers/project.controller.js'
 
 
 const router =Router();
