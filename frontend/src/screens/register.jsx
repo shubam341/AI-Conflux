@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
-import React,{useState} from 'react';
+import React,{useContext,useState} from 'react';
 import { Link ,useNavigate} from 'react-router-dom';
-import axios from '../config/axios' 
+import axios from '../config/axios'
+import {UserContext}  from '../context/user.context' 
 
 const Register = () => {
 
@@ -10,6 +11,9 @@ const Register = () => {
 
    //creating Navigate
     const navigate=useNavigate()
+
+    //Using user context
+      const{setUser}=useContext(UserContext)
 
   //Creating submit handler
   function submitHandler(e){
@@ -21,6 +25,10 @@ const Register = () => {
       password
     }).then((res)=>{
       console.log(res.data)
+
+      localStorage.setItem('token',res.data.token)
+      setUser(res.data.user)
+      
      navigate('/')
     }).catch((err) => {
         if (err.response) {
