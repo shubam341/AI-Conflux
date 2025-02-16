@@ -2,7 +2,7 @@
 import React,{useContext,useState} from 'react';
 import { Link ,useNavigate} from 'react-router-dom';
 import axios from '../config/axios'
-import {UserContext}  from '../context/user.context' 
+import { UserContext } from "../context/user.context.jsx";
 
 const Register = () => {
 
@@ -28,7 +28,7 @@ const Register = () => {
 
       localStorage.setItem('token',res.data.token)
       setUser(res.data.user)
-      
+
      navigate('/')
     }).catch((err) => {
         if (err.response) {

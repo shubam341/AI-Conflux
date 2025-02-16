@@ -1,13 +1,15 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 import AppRoutes from "./routes/AppRoutes";
-import { UserProvider } from "./config/context/user.context";
+import { UserProvider } from "./context/user.context.jsx";
 
 
 const App=()=>{
-<UserProvider>
+  return (
+  <UserProvider>
   <AppRoutes/>
 </UserProvider>
+)
 }
 
 export default App

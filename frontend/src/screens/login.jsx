@@ -3,7 +3,7 @@
 import React ,{useContext, useState} from 'react';
 import { Link ,useNavigate} from 'react-router-dom';     //using usenavigate to render prsn from login to home
 import axios from '../config/axios'
-import {UserContext}  from '../context/user.context'
+import { UserContext } from "../context/user.context.jsx";
 
 
 const Login = () => {
@@ -31,7 +31,7 @@ const Login = () => {
 
       localStorage.setItem('token',res.data.token)
       setUser(res.data.user)
-        
+
       navigate('/')
     }).catch((err)=>{
       console.log(err.response.data)
