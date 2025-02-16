@@ -13,8 +13,11 @@ export const createProject=async(req,res)=>{
 
     }
 try{
-    //taking names 
-    const {name}=req.body;
+     // Get email from the authenticated user (assuming email is stored in req.user)
+     const email = req.user.email;
+
+     //taking name from request body
+     const { name } = req.body;
     const loggedInUser=await userModel.findOne({email});
     const userId=loggedInUser._id;
 
