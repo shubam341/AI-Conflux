@@ -6,7 +6,7 @@ const Home=()=>{
 
     const {user}=useContext(UserContext)
     return(
-<div>{JSON.stringyfy(user)}</div>
+<div>{JSON.stringify(user)}</div>
     )
 }
 export default Home
