@@ -10,7 +10,9 @@ const Home=()=>{
           <main className="p-4" >
 
             <div className="projects">
-                <div className="project"></div>
+                <div className="project">
+                <i className="ri-link"></i>
+                </div>
             </div>
             
           </main>
