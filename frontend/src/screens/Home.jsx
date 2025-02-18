@@ -17,7 +17,12 @@ const Home = () => {
         axios.post('/projects/create',{
             name:projectName,
 
-        }).then((res)=>{}).catch((error)=>{
+        })
+        .then((res)=>{
+            console.log(res)
+            setIsModalOpen(false)
+        })
+        .catch((error)=>{
             console.log(error)
         })
     }
