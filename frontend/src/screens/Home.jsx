@@ -32,7 +32,16 @@ const Home=()=>{
             createProject();
             setIsModalOpen(false);
            }}>
-            <div className="mb-4"><label className=""htmlFor=""></label></div>
+
+            <div className="mb-4"><label className="block text-sm font-medium text-gray-700">Project Name</label>
+            <input type="text" className="mt-1 block w-full p-2 border border-gray-300 rounded-md" required />
+            </div>
+
+
+            <div className="flex justify-end" >
+                <button type="button" className="mr-2 px-4 py-2 bg-gray-300 rounded-md"
+                 onClick={()=>setIsModalOpen(false)}>Cancel</button>
+                </div>
            </form>
             </div>
         </div>
