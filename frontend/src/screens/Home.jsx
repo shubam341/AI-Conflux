@@ -17,6 +17,7 @@ const Home = () => {
                 <button
                     onClick={() => setIsModalOpen(true)}
                     className="project p-4 border border-slate-300 rounded-md">
+                        New Project
                     <i className="ri-link"></i>
                 </button>
             </div>
@@ -47,12 +48,7 @@ const Home = () => {
                 </div>
             )}
 
-            <button
-                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md"
-                onClick={() => setIsModalOpen(true)}
-            >
-                New Project
-            </button>
+            
         </main>
     );
 };
