@@ -5,8 +5,15 @@ import {UserContext} from '../context/user.context'
 const Home=()=>{
 
     const {user}=useContext(UserContext)
+
     return(
-<div>{JSON.stringify(user)}</div>
+          <main className="p-4" >
+
+            <div className="projects">
+                <div className="project"></div>
+            </div>
+            
+          </main>
     )
 }
 export default Home
