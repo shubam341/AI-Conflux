@@ -6,7 +6,7 @@ import axios from "../config/axios"
 const Home = () => {
     const { user } = useContext(UserContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [projectName,setProjectName]=useState(null)
+    const [projectName, setProjectName] = useState('');
 
     // Function to create project
     function createProject(e) {
@@ -15,6 +15,8 @@ const Home = () => {
 
         //calling axios 
         axios.post('/projects/create',{
+           
+
             name:projectName,
 
         })
