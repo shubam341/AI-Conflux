@@ -10,7 +10,7 @@ const Home = () => {
     // Function to create project
     function createProject(e) {
         e.preventDefault();
-        console.log('create project');
+        console.log({projectName});
     }
 
     return (
