@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useContext, useState } from "react";
 import { UserContext } from '../context/user.context';
+import axios from "../config/axios"
 
 const Home = () => {
     const { user } = useContext(UserContext);
