@@ -12,6 +12,14 @@ const Home = () => {
     function createProject(e) {
         e.preventDefault();
         console.log({projectName});
+
+        //calling axios 
+        axios.post('/projects/create',{
+            name:projectName,
+
+        }).then((res)=>{}).catch((error)=>{
+            console.log(error)
+        })
     }
 
     return (
