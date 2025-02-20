@@ -22,7 +22,7 @@ try{
     });
 
 } catch(error){
-if(err.code===11000){
+if(error.code===11000){
     throw new Error('Project name already exists');
 }
 throw error;
