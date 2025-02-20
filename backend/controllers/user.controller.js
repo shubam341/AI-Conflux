@@ -4,35 +4,27 @@ import  {validationResult} from 'express-validator';
 import redisClient from '../services/redis.service.js';
 
 
-export const createUserController = async (req, res) => {
-    const errors = validationResult(req);
+export const createUserController=async(req,res)=>{
+        const errors=validationResult(req);
 
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
+        
+        if(!errors.isEmpty()){
+            return res.status(400).json({errors:errors.array()});
 
-    try {
-        const user = await userService.createUser(req.body); // Creating user
-
-        //  Check if JWT function exists
-        if (!user.generateJWT) {
-            console.error("Error: generateJWT function is missing!");
-            return res.status(500).json({ error: "JWT generation failed." });
         }
+               try{
+                const user=await userService.createUser(req.body);
+                const token=await user.generateJWT();
 
-        // Generate Token
-        const token = await user.generateJWT();
+  delete user._doc.password;  //to save password in backend
 
-        console.log("Generated Token:", token); // Debugging 
+                res.status(201).json({user,token});
 
-        delete user._doc.password; // Remove password before sending response
-        res.status(201).json({ user, token }); // Send user + token
-    } catch (error) {
-        console.error("Error Creating User:", error.message);
-        res.status(400).send(error.message);
-    }
-};
 
+               } catch (error){
+                res.status(400).send(error.message);
+               }                
+}
 
 export const loginController=async(req,res)=>{
     const errors=validationResult(req);
@@ -84,8 +76,6 @@ export const ProfileController=async(req,res)=>{
 
 
 export const logoutController =async(req,res)=>{
-    
- 
     try{
 
         const token = req.cookies.token || req.headers.authorization.split(' ')[1];

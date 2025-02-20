@@ -11,22 +11,22 @@ const Home = () => {
     // Function to create project
     function createProject(e) {
         e.preventDefault();
-        
-        // Debugging: Check token before request
-        console.log("Token before request:", localStorage.getItem('token')); 
-    
-        axios.post('/projects/create', {
-            name: projectName,
+        console.log({projectName});
+
+        //calling axios 
+        axios.post('/project/create',{
+           
+
+            name:projectName,
+
         })
-        .then((res) => {
-            console.log("Project Created:", res);
-            setIsModalOpen(false);
+        .then((res)=>{
+            console.log(res)
+            setIsModalOpen(false)
         })
-        .catch((error) => {
-            console.log("Error creating project:", error.response ? error.response.data : error.message);
-        });
-    
-    
+        .catch((error)=>{
+            console.log(error)
+        })
     }
 
     return (
