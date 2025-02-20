@@ -25,22 +25,19 @@ const Login = () => {
 
     e.preventDefault()
 
-    axios.post('/users/login',{
-      email,
-      password 
-    }).then((res)=>{
-      console.log(res.data)
+    axios.post('/users/login', { email, password })
+    .then((res) => {
+        console.log("Login Response:", res.data); // Check what the backend is sending
 
-      localStorage.setItem('token', res.data.token);
-      console.log("Token stored:", localStorage.getItem('token'));
-      
-      setUser(res.data.user);
-      
+        localStorage.setItem('token', res.data.token);  // Store only the token
+        console.log("Token stored in localStorage:", localStorage.getItem('token')); // Debugging
 
-      navigate('/')
-    }).catch((err)=>{
-      console.log(err.response.data)
+        setUser(res.data.user);
+        navigate('/');
     })
+    .catch((err) => {
+        console.log("Login Error:", err.response ? err.response.data : err.message);
+    });
   }
 
   return (
