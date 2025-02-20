@@ -76,6 +76,8 @@ export const ProfileController=async(req,res)=>{
 
 
 export const logoutController =async(req,res)=>{
+    
+ 
     try{
 
         const token = req.cookies.token || req.headers.authorization.split(' ')[1];

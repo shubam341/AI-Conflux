@@ -3,19 +3,31 @@ import redisClient from "../services/redis.service.js";
 
 export const authUser=async(req,res,next)=>{
     try{
-        const token =req.cookies.token || req.headers.authorization.split(' ')[1];
+        // const token =req.cookies.token || req.headers.authorization.split(' ')[1];
+        
+        let token = req.cookies?.token;
+        
+        if (!token && req.headers.authorization) {
+            const authHeaderParts = req.headers.authorization.split(' ');
+            if (authHeaderParts.length === 2 && authHeaderParts[0] === "Bearer") {
+                token = authHeaderParts[1];
+            }}
 
         if(!token){
-            return res.status(401).send({error:'Unauthorized User'});
+            return res.status(401).send({error:'Unauthorized User. No Token Provided'});
 
+    
+        
+           
+            
         }
  
         //to check logout is blacklisted or not 
         const isBlackListed=await redisClient.get(token);
 
         if(isBlackListed){
-            res.cookie('token','');
-            return res.status(401).send({error:'Unauthorize user'})
+            res.cookie('token','', { httpOnly: true });
+            return res.status(401).send({error:'Unauthorize user. Token is blacklisted'})
         }
 
         const decoded=jwt.verify(token,process.env.JWT_SECRET);
@@ -25,4 +37,4 @@ export const authUser=async(req,res,next)=>{
     }catch(error){
         res.status(401).send({error:"Unauthorized User"})
     }
-}
+    }
