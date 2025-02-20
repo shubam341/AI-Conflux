@@ -11,7 +11,8 @@ const Home = () => {
     // Function to create project
     function createProject(e) {
         e.preventDefault();
-        console.log({projectName});
+        // console.log({projectName});
+        console.log("Token before request:", localStorage.getItem('token'));
 
         //calling axios 
         axios.post('/projects/create',{
@@ -21,11 +22,11 @@ const Home = () => {
 
         })
         .then((res)=>{
-            console.log(res)
+            console.log("Project created successfully:", res);
             setIsModalOpen(false)
         })
         .catch((error)=>{
-            console.log(error)
+            console.error("Error creating project:", error.response ? error.response.data : error.message);
         })
     }
 
