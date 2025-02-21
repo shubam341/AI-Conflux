@@ -52,4 +52,8 @@ export const addUsersToProject=async({projectId, users})=>{
     if(!projectId){
         throw new Error("projectId is required")
     }
+
+    if(!users){
+        throw new Error("users are required")
+    }
 }
