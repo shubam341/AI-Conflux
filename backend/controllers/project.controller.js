@@ -48,6 +48,10 @@ export const getAllProject=async(req,res)=>{
         email:req.user.email
        }) 
 
+       const allUserProjects=await projectService.getAllProjectByUserId({
+        userId:loggedInUser._id
+       })
+
     }catch(err){
         console.log(err)
         res.status(400).json({error:err.message})
