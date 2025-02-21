@@ -45,3 +45,11 @@ const allUserProjects=await projectModel.find({
 return allUserProjects
 
 }
+
+
+export const addUsersToProject=async({projectId, users})=>{
+
+    if(!projectId){
+        throw new Error("projectId is required")
+    }
+}
