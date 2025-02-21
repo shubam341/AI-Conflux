@@ -81,4 +81,22 @@ export const addUsersToProject=async({projectId, users,userId})=>{
         _id:projectId,
         users:userId,
     })
+
+
+    if(!project){
+        throw new Error("User not belong to this project")
+    }
+
+  const updatedProject=await projectModel.findByIdAndUpdate({
+       _id:projectId
+     },{
+        $addToSet:{
+            users:{
+                $each:users
+            }
+        }
+     },{
+        new:true
+     })
+
 }
