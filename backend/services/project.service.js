@@ -33,3 +33,8 @@ return project;
 
 
 
+export const getAllProjectByUserId=async({userId})=>{
+    if(!userId){
+        throw new Error('UserId is required')
+    }
+}
