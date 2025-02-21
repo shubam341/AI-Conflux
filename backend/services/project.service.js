@@ -62,10 +62,23 @@ export const addUsersToProject=async({projectId, users,userId})=>{
         throw new Error("users are required")
     }
 
-    if(!Array.isArray(users)||users.some(userId=>!mongoose.Types.ObjectId.isValid)){
+    if(!Array.isArray(users)||users.some(userId=>!mongoose.Types.ObjectId.isValid(userId))){
         throw new Error("Invalid userId(s) in users array")
     }
 
 
-    
+    if(!userId){
+        throw new Error("userId is required")
+    }
+
+    if(!mongoose.Types.ObjectId.isValid(userId)){
+        throw new Error("Invalid userId")
+    }
+
+
+
+    const project=await projectModel.findOne({
+        _id:projectId,
+        users:userId,
+    })
 }
