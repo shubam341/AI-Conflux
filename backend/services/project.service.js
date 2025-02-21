@@ -90,13 +90,15 @@ export const addUsersToProject=async({projectId, users,userId})=>{
   const updatedProject=await projectModel.findByIdAndUpdate({
        _id:projectId
      },{
-        $addToSet:{
+        $addToSet:{         // settting operatrs
             users:{
-                $each:users
+                $each:users   // adding users 
             }
         }
      },{
         new:true
      })
+
+  return updatedProject
 
 }
