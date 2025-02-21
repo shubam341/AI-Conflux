@@ -66,7 +66,7 @@ export const addUsersToProject=async({projectId, users,userId})=>{
         throw new Error("Invalid userId(s) in users array")
     }
 
-
+ 
     if(!userId){
         throw new Error("userId is required")
     }
@@ -80,6 +80,7 @@ export const addUsersToProject=async({projectId, users,userId})=>{
     const project=await projectModel.findOne({
         _id:projectId,
         users:userId,
+
     })
 
 
