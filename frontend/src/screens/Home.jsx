@@ -14,7 +14,7 @@ const Home = () => {
         console.log({projectName});
 
         //calling axios 
-        axios.post('/project/create',{
+        axios.post('/projects/create',{
            
 
             name:projectName,
