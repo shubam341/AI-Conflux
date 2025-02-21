@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import projectModel from '../models/project.model.js';
 
 
@@ -47,13 +48,24 @@ return allUserProjects
 }
 
 
-export const addUsersToProject=async({projectId, users})=>{
+export const addUsersToProject=async({projectId, users,userId})=>{
 
     if(!projectId){
         throw new Error("projectId is required")
     }
 
+    if(!mongoose.Types.ObjectId.isValid(projectId)){
+        throw new Error("Invalid project Id")
+    }
+
     if(!users){
         throw new Error("users are required")
     }
+
+    if(!Array.isArray(users)||users.some(userId=>!mongoose.Types.ObjectId.isValid)){
+        throw new Error("Invalid userId(s) in users array")
+    }
+
+
+    
 }
