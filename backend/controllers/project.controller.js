@@ -96,3 +96,9 @@ export const addUserToProject=async(req,res)=>{
     }
 }
 
+
+//setting details of project
+
+export const getProjectById=async(req,res)=>{
+    const{projectId}=req.params;
+}

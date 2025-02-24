@@ -103,3 +103,5 @@ export const addUsersToProject=async({projectId, users,userId})=>{
   return updatedProject
 
 }
+
+//for details of every project

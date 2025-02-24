@@ -37,7 +37,11 @@ router.put(
   
 
 
-
+  //getting details of project
+    router.get('/get-project/"projectId',
+    authMiddleWare.authUser,
+      projectController.getProjectById
+    )
 
 
 
