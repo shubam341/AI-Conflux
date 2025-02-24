@@ -25,7 +25,10 @@ const Project = () => {
         <div className="conversation-area flex-grow flex flex-col p-4 space-y-2 overflow-y-auto">
           
           <div className="message-box flex-grow ">
-            <div className="incoming"></div>
+            <div className="incoming message flex flex-col ">
+               <small>exam@gmail.com</small>
+               Lorem ipsum dolor sit amet.
+            </div>
           </div>
         </div>
 
