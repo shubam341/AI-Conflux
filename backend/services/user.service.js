@@ -17,7 +17,9 @@ export const createUser=async({
 
 
 //SERVICE TO ACCES ALL USERS
-export const getAllUsers=async()=>{
-    const users =await userModel.find({});
+export const getAllUsers=async({userId})=>{
+    const users =await userModel.find({
+        _id:{$ne:userId}
+    });
     return users ;
 }
