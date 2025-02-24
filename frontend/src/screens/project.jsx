@@ -9,7 +9,10 @@ const Project =()=>{
 
 console.log(location.state)
     return(
-        <div>Pri</div>
+     <main className="h-screen w-screen flex">
+
+    <section className="left h-full min-w-100 bg-red-300"></section>
+     </main>
     )
 }
 
