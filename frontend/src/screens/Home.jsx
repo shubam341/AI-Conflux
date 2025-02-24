@@ -56,13 +56,13 @@ useEffect(()=>{
            {/* creating map to render everyone one by one      */}
            {
             project.map((project)=>(
-                <div key={project._id} className="project p-4 flex-col gap-2 border cursor-pointer border-slate-300 rounded-md">
+                <div key={project._id} className="project p-4 flex-col gap-2 border cursor-pointer border-slate-300 rounded-md min-w-44 hover:bg-slate-200">
                   <h2
                   className="font-semibold">
                       {project.name}</h2>
                  
                  <div className="flex gap-2">
-                 <i className="ri-user-line"></i>
+               <p> <small> <i className="ri-user-line"></i> Collaborators </small>:</p>
                     {project.users.length }
                  </div>
                 </div>
