@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useContext, useState } from "react";
+import React, { useContext, useState,useEffect } from "react";
 import { UserContext } from '../context/user.context';
 import axios from "../config/axios"
 
@@ -28,6 +28,16 @@ const Home = () => {
             console.log(error)
         })
     }
+
+useEffect(()=>{
+
+    axios.get('/projects/all').then((res)=>{
+        console.log(res.data)
+    }).catch(err=>{
+        console.log(err)
+    })
+},[])
+
 
     return (
         <main className="p-4">
