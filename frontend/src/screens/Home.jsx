@@ -2,13 +2,16 @@
 import React, { useContext, useState,useEffect } from "react";
 import { UserContext } from '../context/user.context';
 import axios from "../config/axios"
- 
+ import {useNavigate} from 'react-router-dom'
+
+
 const Home = () => {
     const { user } = useContext(UserContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [projectName, setProjectName] = useState('');
     const[project,setProject]=useState([])           //storing dat of project in state variable
 
+    const navigate=useNavigate()
 
     // Function to create project
     function createProject(e) {
@@ -56,7 +59,14 @@ useEffect(()=>{
            {/* creating map to render everyone one by one      */}
            {
             project.map((project)=>(
-                <div key={project._id} className="project p-4 flex-col gap-2 border cursor-pointer border-slate-300 rounded-md min-w-44 hover:bg-slate-200">
+                <div key={project._id} 
+
+                onClick={() =>{navigate(`/project`,{
+                    state:{project}
+                })
+                }}
+
+                className="project p-4 flex-col gap-2 border cursor-pointer border-slate-300 rounded-md min-w-44 hover:bg-slate-200">
                   <h2
                   className="font-semibold">
                       {project.name}</h2>
