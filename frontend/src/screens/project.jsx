@@ -21,16 +21,29 @@ const Project = () => {
           </button>
         </header>
 
-        {/* Conversation Area */}
-        <div className="conversation-area flex-grow flex flex-col p-4 space-y-2 overflow-y-auto">
-          
-          <div className="message-box flex-grow ">
-            <div className="incoming message flex flex-col ">
-               <small>exam@gmail.com</small>
-               Lorem ipsum dolor sit amet.
-            </div>
-          </div>
-        </div>
+     
+     
+     {/* Conversation Area */}
+<div className="conversation-area flex-grow flex flex-col p-4 space-y-2 overflow-y-auto">
+  
+
+  {/* Incoming Message (Other User) */}
+  <div className="message-box flex flex-col items-start">
+    <div className="incoming message bg-white text-black p-2 rounded-lg max-w-[75%] shadow-md">
+      <small className="text-gray-500">exam@gmail.com</small>
+      <p>Lorem ipsum dolor sit amet.</p>
+    </div>
+  </div>
+{/* 
+  Outgoing Message (Current User) */}
+  <div className="message-box flex flex-col items-end">
+    <div className="outgoing message bg-blue-600 text-white p-3 rounded-lg max-w-[75%] shadow-md">
+      <p>Hello! How are you?</p>
+    </div>
+  </div>
+
+</div>
+
 
         {/* Input Field - Inside the Left Column */}
         <div className="inputField flex items-center bg-white border-t border-gray-300 p-2 w-full">
@@ -47,6 +60,11 @@ const Project = () => {
             <i className="ri-send-plane-fill"></i>
           </button>
         </div>
+
+
+
+
+
       </section>
     </main>
   );
