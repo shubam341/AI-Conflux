@@ -44,7 +44,7 @@ useEffect(()=>{
 
     return (
         <main className="p-4">
-            <div className="projects">
+            <div className="projects flex flex-wrap gap-3">
                 <button
                     onClick={() => setIsModalOpen(true)}
                     className="project p-4 border border-slate-300 rounded-md">
@@ -56,8 +56,15 @@ useEffect(()=>{
            {/* creating map to render everyone one by one      */}
            {
             project.map((project)=>(
-                <div key={project._id} className="project p-4">{project.name}
-                  <i className="ri-link ml-2"></i>
+                <div key={project._id} className="project p-4 flex-col gap-2 border cursor-pointer border-slate-300 rounded-md">
+                  <h2
+                  className="font-semibold">
+                      {project.name}</h2>
+                 
+                 <div className="flex gap-2">
+                 <i className="ri-user-line"></i>
+                    {project.users.length }
+                 </div>
                 </div>
             ))
            }
