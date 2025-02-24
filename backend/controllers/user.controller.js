@@ -101,6 +101,9 @@ export const getAllUsersController=async(req,res)=>{
         })
 const allUsers=await userService.getAllUsers({userId});
 
+return res.status(200).json({
+    users:allUsers
+})
     }catch(err){
 
     }
