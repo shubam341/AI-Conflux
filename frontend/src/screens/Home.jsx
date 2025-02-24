@@ -2,11 +2,13 @@
 import React, { useContext, useState,useEffect } from "react";
 import { UserContext } from '../context/user.context';
 import axios from "../config/axios"
-
+ 
 const Home = () => {
     const { user } = useContext(UserContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [projectName, setProjectName] = useState('');
+    const[project,setProject]=useState([])           //storing dat of project in state variable
+
 
     // Function to create project
     function createProject(e) {
@@ -29,10 +31,11 @@ const Home = () => {
         })
     }
 
-useEffect(()=>{
 
+    //for getting detail of project
+useEffect(()=>{
     axios.get('/projects/all').then((res)=>{
-        console.log(res.data)
+      setProject(res.data.projects)
     }).catch(err=>{
         console.log(err)
     })
@@ -48,6 +51,16 @@ useEffect(()=>{
                         New Project
                     <i className="ri-link ml-2"></i>
                 </button>
+
+
+           {/* creating map to render everyone one by one      */}
+           {
+            project.map((project)=>(
+                <div key={project._id} className="project p-4">{project.name}
+                  <i className="ri-link ml-2"></i>
+                </div>
+            ))
+           }
             </div>
 
             {/* Create Modal */}
