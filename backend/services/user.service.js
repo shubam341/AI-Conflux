@@ -14,3 +14,10 @@ export const createUser=async({
    });
    return user;
 }
+
+
+//SERVICE TO ACCES ALL USERS
+export const getAllUsers=async()=>{
+    const users =await userModel.find({});
+    return users ;
+}

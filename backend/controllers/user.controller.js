@@ -91,3 +91,14 @@ export const logoutController =async(req,res)=>{
         res.status(400).send(err.message);
     }
 }
+
+
+//TO ACCESS ALL USERS
+export const getAllUsersController=async(req,res)=>{
+    try{
+
+    }catch(err){
+        
+    }
+}
+
