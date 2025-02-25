@@ -69,15 +69,16 @@ const [isSidePanelOpen, setIsSidePanelOpen]=useState(false)
 
 
         {/* Creating Modal state on collaborators icon */}
-        <div className={`sidePanel w-full h-full bg-red-600 absolute  transition-all ${isSidePanelOpen ? 'translate-x-0' : '-translate-x-full'} top-0`}>
+        <div className={`sidePanel w-80 h-full bg-white shadow-lg absolute transition-transform duration-300 ease-in-out ${isSidePanelOpen ? 'translate-x-0' : '-translate-x-full'} top-0 rounded-r-lg`}>
+    
+    <header className="flex justify-end p-3 bg-gray-100 border-b border-gray-300 rounded-tr-lg">
+        <button onClick={() => setIsSidePanelOpen(!isSidePanelOpen)} className="p-2 hover:bg-gray-200 rounded-full transition">
+            <i className="ri-close-large-line text-lg"></i>
+        </button>
+    </header>
 
-            <header
-            className="flex justify-end p-2 px-3 bg-slate-200">
+</div>
 
-
-            </header>
-
-        </div>
 
 
       </section>
