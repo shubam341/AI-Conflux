@@ -83,14 +83,18 @@ const [isSidePanelOpen, setIsSidePanelOpen]=useState(false)
     </header>
 
     {/* User List Container */}
-    <div className="p-4 space-y-4 overflow-y-auto h-[calc(100%-64px)] custom-scrollbar">
-        <div className="p-4 bg-white rounded-xl shadow-lg flex justify-between items-center border border-gray-400 hover:scale-105 transition-all duration-200">
-            <span className="text-gray-700 font-semibold">User ID: 12345</span>
-            <span className="text-blue-600 font-bold">John Doe</span>
-        </div>
+    {/* User List Container */}
+<div className="user p-3 space-y-4 overflow-y-auto h-[calc(100%-64px)] custom-scrollbar">
+    <div className="p-3 bg-white rounded-xl shadow-lg flex items-center space-x-2 border border-gray-400 hover:scale-105 transition-all duration-200">
+        
+        {/* User Icon */}
+        <i className="ri-user-fill text-2xl text-gray-600"></i>
 
-   
+        {/* Username */}
+        <h1 className="font-semibold text-gray-800">Username</h1>
+    
     </div>
+</div>
 </div>
 
 
