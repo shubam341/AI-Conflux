@@ -4,6 +4,9 @@ import { useLocation } from "react-router-dom";
 
 const Project = () => {
   const location = useLocation();
+
+const [isSidePanelOpen, setIsSidePanelOpen]=useState(false)
+
   console.log(location.state);
 
   return (
@@ -16,7 +19,9 @@ const Project = () => {
 
           {/* <h2 className="text-lg font-semibold">Chat</h2> */}
 
-          <button className="p-2 px-110 text-xl">
+          <button 
+          onClick={()=>setIsSidePanelOpen(!isSidePanelOpen)}
+          className="p-2 px-110 text-xl">
             <i className="ri-group-fill"></i>
           </button>
         </header>
@@ -63,6 +68,10 @@ const Project = () => {
 
 
 
+        {/* Creating Modal state on collaborators icon */}
+        <div className={`sidePanel w-36 h-60 bg-red-600 absolute left-[-100%] ${isSidePanelOpen ? '-translate-x-full' : ''} top-0`}>
+
+        </div>
 
 
       </section>
