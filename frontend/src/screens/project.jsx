@@ -7,7 +7,7 @@ const Project = () => {
   console.log(location.state);
 
   return (
-    <main className="h-screen w-screen flex bg-gray-100">
+    <main className="h-screen w-screen flex bg-gray-200">
       <section className="left flex flex-col h-full w-full min-w-4=8 max-w-lg bg-slate-300 shadow-lg relative">
 
 
