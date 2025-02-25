@@ -69,7 +69,13 @@ const [isSidePanelOpen, setIsSidePanelOpen]=useState(false)
 
 
         {/* Creating Modal state on collaborators icon */}
-        <div className={`sidePanel w-36 h-60 bg-red-600 absolute left-[-100%] ${isSidePanelOpen ? '-translate-x-full' : ''} top-0`}>
+        <div className={`sidePanel w-full h-full bg-red-600 absolute  transition-all ${isSidePanelOpen ? 'translate-x-0' : '-translate-x-full'} top-0`}>
+
+            <header
+            className="flex justify-end p-2 px-3 bg-slate-200">
+
+
+            </header>
 
         </div>
 
