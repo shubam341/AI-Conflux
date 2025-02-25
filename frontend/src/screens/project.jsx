@@ -11,17 +11,22 @@ const [isSidePanelOpen, setIsSidePanelOpen]=useState(false)
 
   return (
     <main className="h-screen w-screen overflow-x-hidden overflow-y-auto flex bg-gray-200">
-      <section className="left flex flex-col h-full w-full min-w-4=8 max-w-lg bg-slate-300 shadow-lg relative">
+      <section className="left flex flex-col h-full w-105 min-w-4=8 max-w-lg bg-slate-300 shadow-lg relative">
 
 
         {/* Header */}
         <header className="flex justify-between items-center p-3 px-4 bg-slate-100">
 
-          <h2 className="text-lg font-semibold">Chat</h2>
+         
+        <button className="flex items-center gap-1 to-5% cursor-pointer font-semifold hover:text-blue-600 transition-all">
+        <i className="ri-add-large-fill"></i>
+   <p className="text-lg">Add collaborators</p>
+</button>
+
 
           <button 
           onClick={()=>setIsSidePanelOpen(!isSidePanelOpen)}
-          className="p-2 px-2 text-xl ">
+          className="p-2 px-2 text-xl cursor-pointer ">
             <i className="ri-group-fill  "></i>
           </button>
         </header>
@@ -69,23 +74,23 @@ const [isSidePanelOpen, setIsSidePanelOpen]=useState(false)
 
 
         {/* Creating Modal state on collaborators icon */}
-        <div className={`sidePanel w-full h-full bg-slate-200 shadow-2xl absolute transition-transform duration-300 ease-in-out ${isSidePanelOpen ? 'translate-x-0' : '-translate-x-full'} top-0 left-0 rounded-r-3xl border border-gray-400`}>
+        <div className={`sidePanel w-full h-full bg-slate-300 shadow-2xl absolute transition-transform duration-300 ease-in-out ${isSidePanelOpen ? 'translate-x-0' : '-translate-x-full'} top-0 left-0 rounded-r-3xl border border-gray-400`}>
     
     {/* Header Section */}
-    <header className="flex justify-between items-center p-4 bg-slate-100 border-b border-gray-400 rounded-tr-3xl shadow-md">
+    <header className="flex justify-between items-center p-4 bg-slate-50 border-b border-gray-400 rounded-tr-3xl shadow-md">
         <h2 className="text-xl font-bold text-gray-700">Collaborators</h2>
         <button 
             onClick={() => setIsSidePanelOpen(!isSidePanelOpen)} 
             className="p-2 hover:bg-gray-300 rounded-full transition-all duration-200"
         >
-            <i className="ri-close-large-line text-2xl text-gray-600"></i>
+            <i className="ri-close-large-line  cursor-pointer text-2xl text-gray-600"></i>
         </button>
     </header>
 
+    
     {/* User List Container */}
-    {/* User List Container */}
-<div className="user p-3 space-y-4 overflow-y-auto h-[calc(100%-64px)] custom-scrollbar">
-    <div className="p-3 bg-white rounded-xl shadow-lg flex items-center space-x-2 border border-gray-400 hover:scale-105 transition-all duration-200">
+<div className="user p-3  cursor-pointer space-y-4 overflow-y-auto h-[calc(100%-64px)] custom-scrollbar">
+    <div className="p-3 bg-white rounded-xl   shadow-lg flex items-center space-x-2 border border-gray-400 hover:scale-105 transition-all duration-200">
         
         {/* User Icon */}
         <i className="ri-user-fill text-2xl text-gray-600"></i>
