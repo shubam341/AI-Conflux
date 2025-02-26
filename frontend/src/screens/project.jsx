@@ -107,9 +107,14 @@ const Project = () => {
           <div className="bg-white p-4 rounded-md w-96 max-w-full relative">
             <header className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">Select User</h2>
-              <button onClick={() => setIsModalOpen(false)} className="p-2">
-                <i className="ri-close-fill"></i>
-              </button>
+              <button
+  onClick={() => setIsModalOpen(false)}
+  className="p-2 text-gray-600 rounded-xl transition-all duration-300 ease-in-out hover:text-slate-600 hover:shadow-lg hover:shadow-slate-500 active:scale-90"
+>
+  <i className="ri-close-fill text-2xl"></i>
+</button>
+
+
             </header>
 
             {/* User List in Modal */}
