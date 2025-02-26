@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import axios from '../config/axios'
 
 const Project = () => {
   const location = useLocation();
@@ -9,17 +10,33 @@ const Project = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState([]);
 
-  const users = [
-    { id: 1, name: "User One", email: "userone@example.com" },
-    { id: 2, name: "User Two", email: "usertwo@example.com" },
-    { id: 3, name: "User Three", email: "userthree@example.com" },
-   
-  ]
+  const [users,setUsers]=useState([])
 
   const handleUserClick = (id) => {
-    setSelectedUserId([...selectedUserId,id]);
+   setSelectedUserId(preventSelectedUserId=>{
+  const newSelectedUserId=new Set(preventSelectedUserId);
+    if(newSelectedUserId.has(id)){
+      newSelectedUserId.delete(id);
+    }else{
+      newSelectedUserId.add(id);
+    }
+    return newSelectedUserId;
+   })
+
   
   };
+
+  useEffect(() => {
+    axios
+      .get('/users/all') 
+      .then((res) => {
+        setUsers(res.data.users);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+  
 
   console.log(location.state);
 
@@ -124,9 +141,9 @@ const Project = () => {
                 <div
                   key={user.id}
                   className={`user cursor-pointer hover:bg-slate-200 ${
-                    selectedUserId.indexOf( user.id)!=-1?'bg-slate-400 rounded':""} ? "bg-slate-200" : ""
+                   Array( selectedUserId).indexOf( user._id)!=-1?'bg-slate-300 rounded':""} ? "bg-slate-200" : ""
                   } p-2 flex gap-2 items-center`}
-                  onClick={() => handleUserClick(user.id)}
+                  onClick={() => handleUserClick(user._id)}
                 >
                   <div className="aspect-square relative rounded-full w-fit h-fit flex items-center justify-center p-5 text-white bg-slate-600">
                     <i className="ri-user-fill absolute"></i>
