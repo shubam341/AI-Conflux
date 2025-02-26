@@ -20,6 +20,7 @@ const Project = () => {
     }else{
       newSelectedUserId.add(id);
     }
+    console.log(Array.from(newSelectedUserId))
     return newSelectedUserId;
    })
 
@@ -121,8 +122,8 @@ const Project = () => {
 
       {/* Modal for Selecting Users */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50  bg-opacity-50 flex items-center justify-center">
-          <div className="bg-slate-100 p-4 rounded-md w-96 max-w-full relative">
+        <div className="fixed inset-0 bg-neutral-900/60 backdrop-brightness-75 flex items-center transition-opacity duration-300 justify-center">
+        <div className="bg-slate-100 p-4 rounded-md w-96 max-w-full relative">
             <header className="flex justify-between  items-center mb-4">
               <h2 className="text-xl font-semibold ">Select User</h2>
               <button
@@ -141,7 +142,7 @@ const Project = () => {
                 <div
                   key={user.id}
                   className={`user cursor-pointer hover:bg-slate-200 ${
-                   Array( selectedUserId).indexOf( user._id)!=-1?'bg-slate-300 rounded':""} ? "bg-slate-200" : ""
+                   Array.from( selectedUserId).indexOf( user._id)!=-1?'bg-slate-300 rounded':""} ? "bg-slate-200" : ""
                   } p-2 flex gap-2 items-center`}
                   onClick={() => handleUserClick(user._id)}
                 >
