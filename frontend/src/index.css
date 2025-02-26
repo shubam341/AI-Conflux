@@ -13,3 +13,20 @@ body{
   height:100%;
   width:100%;
 } */
+ /* Custom scrollbar styles */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px; /* Adjust width to make it thinner */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #a0aec0; /* Light gray scrollbar */
+  border-radius: 10px; /* Rounded edges */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #718096; /* Darker gray on hover */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent; /* Transparent track */
+}

@@ -7,23 +7,24 @@ const Project = () => {
 
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedUserId, setSelectedUserId] = useState([]);
 
   const users = [
     { id: 1, name: "User One", email: "userone@example.com" },
     { id: 2, name: "User Two", email: "usertwo@example.com" },
     { id: 3, name: "User Three", email: "userthree@example.com" },
-  ];
+   
+  ]
 
   const handleUserClick = (id) => {
-    setSelectedUserId(id);
-    setIsModalOpen(false);
+    setSelectedUserId([...selectedUserId,id]);
+  
   };
 
   console.log(location.state);
 
   return (
-    <main className="h-screen w-screen overflow-x-hidden overflow-y-auto flex bg-gray-200">
+    <main className="h-screen w-screen overflow-x-hidden custom-scrollbar overflow-y-auto flex bg-gray-200">
       <section className="left flex flex-col h-full w-105 min-w-48 max-w-lg bg-slate-300 shadow-lg relative">
         {/* Header */}
         <header className="flex justify-between items-center p-3 px-4 bg-slate-100">
@@ -36,11 +37,11 @@ const Project = () => {
           </button>
 
           <button
-            onClick={() => setIsSidePanelOpen(!isSidePanelOpen)}
-            className="p-2 px-2 text-xl cursor-pointer"
-          >
-            <i className="ri-group-fill"></i>
-          </button>
+  onClick={() => setIsSidePanelOpen(!isSidePanelOpen)}
+  className="p-2 px-2 text-xl cursor-pointer transition-all duration-300 ease-in-out hover:text-blue-600 hover:scale-110"
+>
+  <i className="ri-group-fill"></i>
+</button>
         </header>
 
         {/* Conversation Area */}
@@ -104,12 +105,12 @@ const Project = () => {
       {/* Modal for Selecting Users */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50  bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-4 rounded-md w-96 max-w-full relative">
-            <header className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">Select User</h2>
+          <div className="bg-slate-100 p-4 rounded-md w-96 max-w-full relative">
+            <header className="flex justify-between  items-center mb-4">
+              <h2 className="text-xl font-semibold ">Select User</h2>
               <button
   onClick={() => setIsModalOpen(false)}
-  className="p-2 text-gray-600 rounded-xl transition-all duration-300 ease-in-out hover:text-slate-600 hover:shadow-lg hover:shadow-slate-500 active:scale-90"
+  className="p-2 text-gray-600  rounded-xl transition-all duration-300 ease-in-out hover:text-slate-600 hover:shadow-lg hover:shadow-slate-500 active:scale-90"
 >
   <i className="ri-close-fill text-2xl"></i>
 </button>
@@ -118,12 +119,12 @@ const Project = () => {
             </header>
 
             {/* User List in Modal */}
-            <div className="users-list flex flex-col gap-2 mb-16 max-h-96 overflow-auto">
+            <div className="users-list flex flex-col gap-2 mb-16 custom-scrollbar max-h-96 overflow-auto">
               {users.map((user) => (
                 <div
                   key={user.id}
                   className={`user cursor-pointer hover:bg-slate-200 ${
-                    selectedUserId === user.id ? "bg-slate-200" : ""
+                    selectedUserId.indexOf( user.id)!=-1?'bg-slate-400 rounded':""} ? "bg-slate-200" : ""
                   } p-2 flex gap-2 items-center`}
                   onClick={() => handleUserClick(user.id)}
                 >
