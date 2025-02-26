@@ -28,8 +28,8 @@ const Project = () => {
   };
 
   function addCollaborators(){
-    axios.post("/projects/add-user",{
-      projectId:location.state.projectId,
+    axios.put("/projects/add-user",{
+      projectId:location.state.project._id,
       users:Array.from(selectedUserId)
     }).then(res=>{
       console.log(res.data)
