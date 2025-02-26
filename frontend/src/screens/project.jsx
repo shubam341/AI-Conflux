@@ -20,12 +20,24 @@ const Project = () => {
     }else{
       newSelectedUserId.add(id);
     }
-    console.log(Array.from(newSelectedUserId))
+ 
     return newSelectedUserId;
    })
 
   
   };
+
+  function addCollaborators(){
+    axios.post("/projects/add-user",{
+      projectId:location.state.projectId,
+      users:Array.from(selectedUserId)
+    }).then(res=>{
+      console.log(res.data)
+      setIsModalOpen(false)
+    }).catch(err=>{
+      console.log(err);
+    })
+  }
 
   useEffect(() => {
     axios
@@ -154,7 +166,9 @@ const Project = () => {
               ))}
             </div>
 
-            <button className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-blue-600 text-white rounded-md transition-all duration-300 ease-in-out hover:scale-105 active:scale-95">
+            <button
+            onClick={addCollaborators}
+            className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-blue-600 text-white rounded-md transition-all duration-300 ease-in-out hover:scale-105 active:scale-95">
         Add Collaborators
       </button>
           </div>
