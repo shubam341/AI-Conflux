@@ -9,6 +9,7 @@ const Project = () => {
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState([]);
+  const [project,setProject]=useState(location.state.project)
 
   const [users,setUsers]=useState([])
 
@@ -40,6 +41,12 @@ const Project = () => {
   }
 
   useEffect(() => {
+  
+    axios.get(`/project/get-project/${location.state.project._id}`).then(res=>{
+      setProject(res.data.project)
+    })
+
+
     axios
       .get('/users/all') 
       .then((res) => {
@@ -48,7 +55,7 @@ const Project = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  });
   
 
   console.log(location.state);
