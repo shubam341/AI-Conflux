@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -8,7 +9,7 @@ const Project = () => {
 
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState([]);
+  const [selectedUserId, setSelectedUserId] = useState(new Set());
   const [project,setProject]=useState(location.state.project)
 
   const [users,setUsers]=useState([])
@@ -28,36 +29,40 @@ const Project = () => {
   
   };
 
-  function addCollaborators(){
-    axios.put("/projects/add-user",{
-      projectId:location.state.project._id,
-      users:Array.from(selectedUserId)
-    }).then(res=>{
-      console.log(res.data)
-      setIsModalOpen(false)
-    }).catch(err=>{
-      console.log(err);
-    })
-  }
+  function addCollaborators() {
 
-  useEffect(() => {
-  
-    axios.get(`/project/get-project/${location.state.project._id}`).then(res=>{
-      
-      console.log(res.data.project)
-      setProject(res.data.project)
+    axios.put("/projects/add-user", {
+        projectId: location.state.project._id,
+        users: Array.from(selectedUserId)
+    }).then(res => {
+        console.log(res.data)
+        setIsModalOpen(false)
+
+    }).catch(err => {
+        console.log(err)
     })
 
+}
 
-    axios
-      .get('/users/all') 
-      .then((res) => {
-        setUsers(res.data.users);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  });
+useEffect(() => {
+   axios.get(`/projects/get-project/${location.state.project._id}`).then(res => {
+
+      console.log(res.data.project);
+      setProject(res.data.project);
+    });
+
+    axios.get('/users/all').then(res => {
+
+      setUsers(res.data.users)
+
+  }).catch(err => {
+
+      console.log(err)
+
+  })
+
+}, [])
+
   
 
   console.log(location.state);
@@ -130,17 +135,17 @@ const Project = () => {
           </header>
 
           {/* User List */}
-          <div className="user p-3 cursor-pointer space-y-4 overflow-y-auto h-[calc(100%-64px)] custom-scrollbar">
+          <div className="users p-3 cursor-pointer space-y-4 overflow-y-auto h-[calc(100%-64px)] custom-scrollbar">
            
         {/* Creating map for users */}
-        {project.users && project.users.map((user, index) => {
+       {project.users && project.users.map((user, index) => {
   return (
     <div
       key={index} // Added key prop
       className="p-3 bg-white rounded-xl shadow-lg flex items-center space-x-2 border border-gray-400 hover:scale-105 transition-all duration-200"
     >
       <i className="ri-user-fill text-2xl text-gray-600"></i>
-      <h1 className="font-semibold text-gray-800">{user.name}</h1> {/* Dynamically display user name */}
+      <h1 className="font-semibold text-gray-800">{user.email}</h1> {/* Dynamically display user name */}
     </div>
   );
 })}
