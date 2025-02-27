@@ -43,6 +43,8 @@ const Project = () => {
   useEffect(() => {
   
     axios.get(`/project/get-project/${location.state.project._id}`).then(res=>{
+      
+      console.log(res.data.project)
       setProject(res.data.project)
     })
 
@@ -129,11 +131,22 @@ const Project = () => {
 
           {/* User List */}
           <div className="user p-3 cursor-pointer space-y-4 overflow-y-auto h-[calc(100%-64px)] custom-scrollbar">
-            <div className="p-3 bg-white rounded-xl shadow-lg flex items-center space-x-2 border border-gray-400 hover:scale-105 transition-all duration-200">
-              <i className="ri-user-fill text-2xl text-gray-600"></i>
-              <h1 className="font-semibold text-gray-800">Username</h1>
-            </div>
-          </div>
+           
+        {/* Creating map for users */}
+        {project.users && project.users.map((user, index) => {
+  return (
+    <div
+      key={index} // Added key prop
+      className="p-3 bg-white rounded-xl shadow-lg flex items-center space-x-2 border border-gray-400 hover:scale-105 transition-all duration-200"
+    >
+      <i className="ri-user-fill text-2xl text-gray-600"></i>
+      <h1 className="font-semibold text-gray-800">{user.name}</h1> {/* Dynamically display user name */}
+    </div>
+  );
+})}
+
+    </div>
+      
         </div>
       </section>
 
