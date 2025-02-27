@@ -125,7 +125,7 @@ useEffect(() => {
           } top-0 left-0 rounded-r-3xl border border-gray-400`}
         >
           <header className="flex justify-between items-center p-4 bg-slate-50 border-b border-gray-400 rounded-tr-3xl shadow-md">
-            <h2 className="text-xl font-bold text-gray-700">Collaborators</h2>
+            <h2 className="text-lg font-bold text-gray-700">Collaborators</h2>
             <button
               onClick={() => setIsSidePanelOpen(!isSidePanelOpen)}
               className="p-2 hover:bg-gray-300 rounded-full transition-all duration-200"
