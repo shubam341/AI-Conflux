@@ -183,10 +183,11 @@ useEffect(() => {
                   } p-2 flex gap-2 items-center`}
                   onClick={() => handleUserClick(user._id)}
                 >
-                  <div className="aspect-square relative rounded-full w-fit h-fit flex items-center justify-center p-5 text-white bg-slate-600">
-                    <i className="ri-user-fill absolute"></i>
+<div 
+  className="aspect-square relative rounded-full w-fit h-fit flex items-center justify-center   p-5 text-white bg-slate-600 shadow-md transition-all duration-300  hover:bg-slate-700 hover:scale-110 hover:shadow-lg">                
+      <i className="ri-user-fill absolute"></i>
                   </div>
-                  <h1 className="font-semibold text-lg">{user.email}</h1>
+                  <h1 className="font-semibold text-lg  ">{user.email}</h1>
                 </div>
               ))}
             </div>
