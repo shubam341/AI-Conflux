@@ -29,7 +29,7 @@ io.use(async(socket, next) => {
   return next(new Error('Invalid projectId'));
       }
 
-      socket.project=await projectModel.findById(project)
+      socket.project=await projectModel.findById(projectId)
 
         if (!token) {
             return next(new Error('Authentication error: No token provided'));
@@ -50,6 +50,12 @@ io.use(async(socket, next) => {
 
 io.on('connection', (socket) => {
     console.log('A user connected');
+
+    socket.join(socket.project._id);
+
+    socket.on('project-message',data=>{
+      socket.broadcast.to(socket.project._id).emit('project-message',data)
+    })
 
     socket.on('event', (data) => {
         console.log('Received event:', data);

@@ -1,9 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
 import { useLocation } from "react-router-dom";
 import axios from '../config/axios'
 import { initializeSocket,receiveMessage,sendMessage } from "../config/socket";
+import {UserContext} from '../context/UserContext'
 
 const Project = () => {
   const location = useLocation();
@@ -11,7 +12,9 @@ const Project = () => {
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(new Set());
-  const [project,setProject]=useState(location.state.project)
+  const [project,setProject]=useState(location.state.project);
+  const [message,setMessage]=useState('')
+const {user}=useContext(UserContext)
 
   const [users,setUsers]=useState([])
 
@@ -45,10 +48,26 @@ const Project = () => {
 
 }
 
+
+function send(){
+
+  sendMessage('project-message',{
+    message,
+    sender:user._id
+  })
+}
+
 useEffect(() => {
 
 //calling socket
 initializeSocket(project._id)
+
+//for receive mesage
+receiveMessage('project-message',data=>{
+  console.log(data)
+})
+
+
 
    axios.get(`/projects/get-project/${location.state.project._id}`).then(res => {
 
@@ -113,7 +132,10 @@ initializeSocket(project._id)
 
         {/* Input Field */}
         <div className="inputField flex items-center bg-white border-t border-gray-300 p-2 w-full">
-          <input
+          <input 
+
+          value={message}
+ onChange={(e)=>setMessage(e.target.value)}
             className="flex-grow p-3 px-4 border border-gray-300 rounded-lg outline-none text-left bg-white"
             type="text"
             placeholder="Enter message..."
