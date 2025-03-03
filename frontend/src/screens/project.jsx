@@ -4,7 +4,7 @@ import React, { useEffect, useState,useContext } from "react";
 import { useLocation } from "react-router-dom";
 import axios from '../config/axios'
 import { initializeSocket,receiveMessage,sendMessage } from "../config/socket";
-import {UserContext} from '../context/UserContext'
+import {UserContext} from '../context/user.context.'
 
 const Project = () => {
   const location = useLocation();
@@ -55,6 +55,7 @@ function send(){
     message,
     sender:user._id
   })
+  setMessage("")
 }
 
 useEffect(() => {
@@ -140,7 +141,9 @@ receiveMessage('project-message',data=>{
             type="text"
             placeholder="Enter message..."
           />
-          <button className="ml-2 p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+          <button
+          onClick={send} 
+          className="ml-2 p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
             <i className="ri-send-plane-fill"></i>
           </button>
         </div>
