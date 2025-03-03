@@ -3,6 +3,8 @@ import http from 'http';
 import app from './app.js';
 import { Server } from 'socket.io';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
+import projectModel from './models/project.model.js'
 
 const port = process.env.PORT || 3000;
 
@@ -16,9 +18,18 @@ const io = new Server(server, {
 });
 
 // Middleware for socket authentication
-io.use((socket, next) => {
+io.use(async(socket, next) => {
     try {
         const token = socket.handshake.auth?.token || socket.handshake.headers.authorization?.split(' ')[1];
+
+      //when socket connect it automatically connected to the room
+      const projectId=socket.handshake.query.projectId;
+      //cheecking  mongoose id valid
+      if(mongoose.Types.ObjectId.isValid(projectId)){
+  return next(new Error('Invalid projectId'));
+      }
+
+      socket.project=await projectModel.findById(project)
 
         if (!token) {
             return next(new Error('Authentication error: No token provided'));
