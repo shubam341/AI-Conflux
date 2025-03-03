@@ -10,5 +10,5 @@ export const initializeSocket=()=>{
         }
     });
 
-    return socketInstance
-}
+    return socketInstance;
+} 
