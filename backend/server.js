@@ -25,9 +25,10 @@ io.use(async(socket, next) => {
       //when socket connect it automatically connected to the room
       const projectId=socket.handshake.query.projectId;
       //cheecking  mongoose id valid
-      if(mongoose.Types.ObjectId.isValid(projectId)){
-  return next(new Error('Invalid projectId'));
+      if (!mongoose.Types.ObjectId.isValid(projectId)) {
+        return next(new Error('Invalid projectId'));
       }
+      
 
       socket.project=await projectModel.findById(projectId)
 
