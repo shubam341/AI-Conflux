@@ -4,7 +4,7 @@ import React, { useEffect, useState,useContext } from "react";
 import { useLocation } from "react-router-dom";
 import axios from '../config/axios'
 import { initializeSocket,receiveMessage,sendMessage } from "../config/socket";
-import {UserContext} from '../context/user.context.'
+import {UserContext} from '../context/user.context'
 
 const Project = () => {
   const location = useLocation();
@@ -49,7 +49,7 @@ const {user}=useContext(UserContext)
 }
 
 
-function send(){
+const send=()=>{
 
   sendMessage('project-message',{
     message,
