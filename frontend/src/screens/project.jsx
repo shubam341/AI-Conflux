@@ -90,7 +90,7 @@ receiveMessage('project-message',data=>{
 
   
 
-  console.log(location.state);
+
 
   return (
     <main className="h-screen w-screen overflow-x-hidden custom-scrollbar overflow-y-auto flex bg-gray-200">
