@@ -101,26 +101,32 @@ function appendIncomingMessage(messageObject) {
   message.classList.add(
       'incoming', 
       'message', 
-      'bg-white',  // White background like the reference
+      'bg-white',  // White background
       'text-black', 
       'p-2', 
       'rounded-lg', 
       'max-w-[75%]',  // Adjusted width for consistency
       'shadow-md', 
       'self-start',  // Aligns incoming messages to the left
-      'mb-2',        // Adds spacing between messages
+      'mt-1',        // Adds spacing above each message
+      'mb-3',        // Adds spacing below each message to prevent touching
       'w-fit',       // Auto-adjusts bubble width based on content
-      'break-words', // Ensures long words wrap instead of overflowing
-      'whitespace-pre-line' // Wraps text correctly while keeping line breaks
+      'break-words', // Prevents overflow
+      'whitespace-pre-line', // Keeps line breaks
+      'relative',    // Prevents overlapping
+      'z-0',         // Keeps messages layered properly
+      'clear-both',  // Ensures messages are placed correctly
+      'items-start'  // Aligns text to the top (real chat feel)
   );
 
   message.innerHTML = `
       <small class="text-gray-500">${messageObject.sender.email}</small>
-      <p class="text-sm">${messageObject.message}</p>
+      <p class="text-sm mt-1">${messageObject.message}</p>
   `;
 
   messageBox.appendChild(message);
 }
+
 
 
 //function for outgoing message
