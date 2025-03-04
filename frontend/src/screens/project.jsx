@@ -99,7 +99,7 @@ function appendIncomingMessage(messageObject) {
 
   const message = document.createElement('div');
   message.classList.add(
-      'incoming', 
+      
       'message', 
       'bg-white',  // White background
       'text-black', 
