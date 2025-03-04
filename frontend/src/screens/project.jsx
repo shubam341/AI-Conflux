@@ -99,29 +99,27 @@ function appendIncomingMessage(messageObject) {
 
   const message = document.createElement('div');
   message.classList.add(
-      
-      'message', 
-      'bg-white',  // White background
-      'text-black', 
-      'p-2', 
-      'rounded-lg', 
-      'max-w-[75%]',  // Adjusted width for consistency
-      'shadow-md', 
-      'self-start',  // Aligns incoming messages to the left
-      'mt-1',        // Adds spacing above each message
-      'mb-3',        // Adds spacing below each message to prevent touching
-      'w-fit',       // Auto-adjusts bubble width based on content
-      'break-words', // Prevents overflow
-      'whitespace-pre-line', // Keeps line breaks
-      'relative',    // Prevents overlapping
-      'z-0',         // Keeps messages layered properly
-      'clear-both',  // Ensures messages are placed correctly
-      'items-start'  // Aligns text to the top (real chat feel)
+    'message',
+    'bg-white',  
+    'text-black', 
+    'p-3', 
+    'rounded-lg', 
+    'max-w-[60%]',  // Keep messages compact
+    'shadow-md', 
+    'self-start',  
+    'mt-2',        // Fix top spacing
+    'mb-3',        // Space below message
+    'w-fit',       
+    'break-words', 
+    'whitespace-pre-line',  
+    'leading-tight',  // Fix extra space inside bubble
+    'flex',
+    'flex-col'
   );
 
   message.innerHTML = `
-      <small class="text-gray-500">${messageObject.sender.email}</small>
-      <p class="text-sm mt-1">${messageObject.message}</p>
+      <small class="text-gray-500 block mb-1">${messageObject.sender.email}</small>
+      <p class="text-sm">${messageObject.message}</p>
   `;
 
   messageBox.appendChild(message);
@@ -137,31 +135,29 @@ function appendOutgoingMessage(message) {
   newMessage.classList.add(
     'ml-auto',
     'bg-blue-600',
-    'text-sm',
-    'flex-col',
-    'flex',
     'text-white',
     'p-3',
-    'item-end',
-    'message-box',
     'rounded-lg',
-    'max-w-[75%]',  // Keeps messages from being too wide
+    'max-w-[60%]',  // Keep outgoing messages compact
     'shadow-md',
-    'self-start',  // Aligns outgoing messages properly
-    'mb-2',        // Adds spacing between messages
-    'w-fit',       // Auto-adjusts bubble width based on content
-    'break-words', // Ensures long words wrap instead of overflowing
-    'whitespace-pre-line' // Wraps text correctly while keeping line breaks
+    'self-end',   // Align messages properly
+    'mt-2',       // Fix top spacing
+    'mb-3',       // Space between messages
+    'w-fit',       
+    'break-words', 
+    'whitespace-pre-line',  
+    'leading-tight',  // Fix extra space inside bubble
+    'flex',
+    'flex-col'
   );
 
   newMessage.innerHTML = `
-      <small class="text-gray-300">${user.email}</small>
+      <small class="text-gray-300 block mb-1">${user.email}</small>
       <p class="text-sm">${message}</p>
   `;
 
   messageBox.appendChild(newMessage);
 }
-
 
   
 
