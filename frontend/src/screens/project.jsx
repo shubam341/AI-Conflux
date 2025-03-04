@@ -53,8 +53,11 @@ const send=()=>{
 
   sendMessage('project-message',{
     message,
-    sender:user._id
+    sender:user
   })
+
+  appendOutgoingMessage(message)
+
   setMessage("")
 }
 
@@ -90,17 +93,67 @@ receiveMessage('project-message',data=>{
 }, [])
 
 
-function appendIncomingMessage(messageObject){
+//function for sending message
+function appendIncomingMessage(messageObject) {
+  const messageBox = document.querySelector('.message-box');
 
-    const messageBox=document.querySelector('.message-box')
+  const message = document.createElement('div');
+  message.classList.add(
+      'incoming', 
+      'message', 
+      'bg-white',  // White background like the reference
+      'text-black', 
+      'p-2', 
+      'rounded-lg', 
+      'max-w-[75%]',  // Adjusted width for consistency
+      'shadow-md', 
+      'self-start',  // Aligns incoming messages to the left
+      'mb-2',        // Adds spacing between messages
+      'w-fit',       // Auto-adjusts bubble width based on content
+      'break-words', // Ensures long words wrap instead of overflowing
+      'whitespace-pre-line' // Wraps text correctly while keeping line breaks
+  );
 
-    const message=document.createElement('div')
-    message.classList.add('message','max-w-56','flex','flex-col','p-2','ng-slate-300')
-    message.innerHTML=`
-    <small class='opacity-65 text-xs'>${messageObject.sender.email}</small>
-    <p class='text-sm'>${messageObject.message}</p>
-    `
-    messageBox.appendChild(message)
+  message.innerHTML = `
+      <small class="text-gray-500">${messageObject.sender.email}</small>
+      <p class="text-sm">${messageObject.message}</p>
+  `;
+
+  messageBox.appendChild(message);
+}
+
+
+//function for outgoing message
+function appendOutgoingMessage(message) {
+  const messageBox = document.querySelector('.message-box');
+
+  const newMessage = document.createElement('div');
+  newMessage.classList.add(
+    'ml-auto',
+    'bg-blue-600',
+    'text-sm',
+    'flex-col',
+    'flex',
+    'text-white',
+    'p-3',
+    'item-end',
+    'message-box',
+    'rounded-lg',
+    'max-w-[75%]',  // Keeps messages from being too wide
+    'shadow-md',
+    'self-start',  // Aligns outgoing messages properly
+    'mb-2',        // Adds spacing between messages
+    'w-fit',       // Auto-adjusts bubble width based on content
+    'break-words', // Ensures long words wrap instead of overflowing
+    'whitespace-pre-line' // Wraps text correctly while keeping line breaks
+  );
+
+  newMessage.innerHTML = `
+      <small class="text-gray-300">${user.email}</small>
+      <p class="text-sm">${message}</p>
+  `;
+
+  messageBox.appendChild(newMessage);
 }
 
 
