@@ -93,9 +93,8 @@ receiveMessage('project-message',data=>{
 }, [])
 
 
-//function for sending message
 function appendIncomingMessage(messageObject) {
-  const messageBox = document.querySelector('.message-box ');
+  const messageBox = document.querySelector('.message-box');
 
   const message = document.createElement('div');
   message.classList.add(
@@ -104,16 +103,15 @@ function appendIncomingMessage(messageObject) {
     'text-black', 
     'p-3', 
     'rounded-lg', 
-    'max-w-[60%]',  // Keep messages compact
+    'max-w-[60%]',  
     'shadow-md', 
     'self-start',  
-    'mt-2',        // Fix top spacing
-    'mb-3',        // Space below message
+    'mt-2',        
+    'mb-3',        
     'w-fit', 
-    'no-scrollbar',      
     'break-words', 
     'whitespace-pre-line',  
-    'leading-tight',  // Fix extra space inside bubble
+    'leading-tight',  
     'flex',
     'flex-col'
   );
@@ -124,11 +122,18 @@ function appendIncomingMessage(messageObject) {
   `;
 
   messageBox.appendChild(message);
+
+  // Smooth scroll to latest message
+  messageBox.parentElement.style.overflowY = "auto"; // Enables scrolling
+  messageBox.parentElement.style.scrollbarWidth = "none"; // Hides scrollbar (Firefox)
+  messageBox.parentElement.style.msOverflowStyle = "none"; // Hides scrollbar (IE/Edge)
+  messageBox.parentElement.style.setProperty("::-webkit-scrollbar", "none"); // Hides scrollbar (Chrome, Safari)
+
+  setTimeout(() => {
+    messageBox.parentElement.scrollTo({ top: messageBox.parentElement.scrollHeight, behavior: 'smooth' });
+  }, 100);
 }
 
-
-
-//function for outgoing message
 function appendOutgoingMessage(message) {
   const messageBox = document.querySelector('.message-box');
 
@@ -138,17 +143,16 @@ function appendOutgoingMessage(message) {
     'bg-blue-600',
     'text-white',
     'p-3',
-    'no-scrollbar',
     'rounded-lg',
-    'max-w-[60%]',  // Keep outgoing messages compact
+    'max-w-[60%]',  
     'shadow-md',
-    'self-end',   // Align messages properly
-    'mt-2',       // Fix top spacing
-    'mb-3',       // Space between messages
+    'self-end',  
+    'mt-2',       
+    'mb-3',       
     'w-fit',       
     'break-words', 
     'whitespace-pre-line',  
-    'leading-tight',  // Fix extra space inside bubble
+    'leading-tight',  
     'flex',
     'flex-col'
   );
@@ -159,7 +163,13 @@ function appendOutgoingMessage(message) {
   `;
 
   messageBox.appendChild(newMessage);
+
+  // Smooth scroll to latest message
+  setTimeout(() => {
+    messageBox.parentElement.scrollTo({ top: messageBox.parentElement.scrollHeight, behavior: 'smooth' });
+  }, 100);
 }
+
 
   
 
@@ -217,10 +227,10 @@ function appendOutgoingMessage(message) {
         send();
       }
     }}
-    className="flex-grow p-3 px-4 border border-gray-300 rounded-lg outline-none 
-               text-left bg-white resize-none overflow-y-auto max-h-28 
+    className="flex-grow p-3 px-3 border border-gray-300 rounded-lg outline-none 
+               text-left bg-white resize-none overflow-y-auto max-h-25 
                no-scrollbar"
-    placeholder="Enter message... (Shift + Enter for new line)"
+    placeholder="Enter message..."
     rows="2"
   />
 
