@@ -95,7 +95,7 @@ receiveMessage('project-message',data=>{
 
 //function for sending message
 function appendIncomingMessage(messageObject) {
-  const messageBox = document.querySelector('.message-box');
+  const messageBox = document.querySelector('.message-box ');
 
   const message = document.createElement('div');
   message.classList.add(
@@ -109,7 +109,8 @@ function appendIncomingMessage(messageObject) {
     'self-start',  
     'mt-2',        // Fix top spacing
     'mb-3',        // Space below message
-    'w-fit',       
+    'w-fit', 
+    'no-scrollbar',      
     'break-words', 
     'whitespace-pre-line',  
     'leading-tight',  // Fix extra space inside bubble
@@ -137,6 +138,7 @@ function appendOutgoingMessage(message) {
     'bg-blue-600',
     'text-white',
     'p-3',
+    'no-scrollbar',
     'rounded-lg',
     'max-w-[60%]',  // Keep outgoing messages compact
     'shadow-md',
@@ -164,7 +166,7 @@ function appendOutgoingMessage(message) {
 
 
   return (
-    <main className="h-screen w-screen overflow-x-hidden custom-scrollbar overflow-y-auto flex bg-gray-200">
+    <main className="h-screen w-screen overflow-x-hidden no-scrollbar custom-scrollbar overflow-y-auto flex bg-gray-200">
       <section className="left flex flex-col h-full w-105 min-w-48 max-w-lg bg-slate-300 shadow-lg relative">
         {/* Header */}
         <header className="flex justify-between items-center p-3 px-4 bg-slate-100">
@@ -206,24 +208,35 @@ function appendOutgoingMessage(message) {
 
         {/* Input Field */}
         <div className="inputField flex items-center bg-white border-t border-gray-300 p-2 w-full">
-          <input 
+  <textarea
+    value={message}
+    onChange={(e) => setMessage(e.target.value)}
+    onKeyDown={(e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault(); // Prevents newline and sends message
+        send();
+      }
+    }}
+    className="flex-grow p-3 px-4 border border-gray-300 rounded-lg outline-none 
+               text-left bg-white resize-none overflow-y-auto max-h-28 
+               no-scrollbar"
+    placeholder="Enter message... (Shift + Enter for new line)"
+    rows="2"
+  />
 
-          value={message}
- onChange={(e)=>setMessage(e.target.value)}
-            className="flex-grow p-3 px-4 border border-gray-300 rounded-lg outline-none text-left bg-white"
-            type="text"
-            placeholder="Enter message..."
-          />
-          <button
-          onClick={send} 
-          className="ml-2 p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-            <i className="ri-send-plane-fill"></i>
-          </button>
+       <button
+  onClick={send} 
+  className="ml-2 p-3 bg-blue-600 text-white rounded-lg 
+             hover:bg-blue-700 hover:scale-105 active:scale-95 
+             transition-all duration-200 ease-in-out shadow-md">
+  <i className="ri-send-plane-fill"></i>
+</button>
+
         </div>
 
         {/* Side Panel for Collaborators */}
         <div
-          className={`sidePanel w-full h-full bg-slate-300 shadow-2xl absolute transition-transform duration-300 ease-in-out ${
+          className={`sidePanel w-full h-full no-scrollbar bg-slate-300 shadow-2xl absolute transition-transform duration-300 ease-in-out ${
             isSidePanelOpen ? "translate-x-0" : "-translate-x-full"
           } top-0 left-0 rounded-r-3xl border border-gray-400`}
         >

@@ -30,3 +30,11 @@ body{
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent; /* Transparent track */
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  scrollbar-width: none; /* Firefox */
+}
