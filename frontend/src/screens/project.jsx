@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useState,useContext } from "react";
 import { useLocation } from "react-router-dom";
 import axios from '../config/axios'
@@ -15,6 +14,7 @@ const Project = () => {
   const [project,setProject]=useState(location.state.project);
   const [message,setMessage]=useState('')
 const {user}=useContext(UserContext)
+const messageBox=React.createRef()
 
   const [users,setUsers]=useState([])
 
@@ -66,6 +66,7 @@ initializeSocket(project._id)
 //for receive mesage
 receiveMessage('project-message',data=>{
   console.log(data)
+  appendIncomingMessage(data)
 })
 
 
@@ -87,6 +88,21 @@ receiveMessage('project-message',data=>{
   })
 
 }, [])
+
+
+function appendIncomingMessage(messageObject){
+
+    const messageBox=document.querySelector('.message-box')
+
+    const message=document.createElement('div')
+    message.classList.add('message','max-w-56','flex','flex-col','p-2','ng-slate-300')
+    message.innerHTML=`
+    <small class='opacity-65 text-xs'>${messageObject.sender.email}</small>
+    <p class='text-sm'>${messageObject.message}</p>
+    `
+    messageBox.appendChild(message)
+}
+
 
   
 
@@ -116,7 +132,9 @@ receiveMessage('project-message',data=>{
         {/* Conversation Area */}
         <div className="conversation-area flex-grow flex flex-col p-4 space-y-2 overflow-y-auto">
           {/* Incoming Message */}
-          <div className="message-box flex flex-col items-start">
+          <div
+            ref={messageBox}
+          className="message-box flex flex-col items-start">
             <div className="incoming message bg-white text-black p-2 rounded-lg max-w-[75%] shadow-md">
               <small className="text-gray-500">exam@gmail.com</small>
               <p>Lorem ipsum dolor sit amet.</p>
