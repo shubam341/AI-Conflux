@@ -124,6 +124,7 @@ function appendIncomingMessage(messageObject) {
   `;
 
   messageBox.appendChild(message);
+scrollToBottom()
 
   setTimeout(() => {
     messageBox.parentElement.scrollTo({ top: messageBox.parentElement.scrollHeight, behavior: 'smooth' });
@@ -159,7 +160,7 @@ function appendOutgoingMessage(message) {
   `;
 
   messageBox.appendChild(newMessage);
-
+scrollToBottom()
   // Smooth scroll to latest message
   setTimeout(() => {
     messageBox.parentElement.scrollTo({ top: messageBox.parentElement.scrollHeight, behavior: 'smooth' });
@@ -167,7 +168,10 @@ function appendOutgoingMessage(message) {
 }
 
 
-  
+  //function for scroll to bottom
+  function scrollToBottom(){
+    messageBox.current.scrollTop=messageBox.current.scrollHeight
+  }
 
 
 

@@ -37,4 +37,5 @@ body{
 
 .no-scrollbar {
   scrollbar-width: none; /* Firefox */
+  scroll-behaviour:smooth;
 }
