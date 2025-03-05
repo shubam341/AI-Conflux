@@ -51,6 +51,8 @@ const messageBox=React.createRef()
 
 const send=()=>{
 
+  if (!message.trim()) return; 
+
   sendMessage('project-message',{
     message,
     sender:user
@@ -123,12 +125,6 @@ function appendIncomingMessage(messageObject) {
 
   messageBox.appendChild(message);
 
-  // Smooth scroll to latest message
-  messageBox.parentElement.style.overflowY = "auto"; // Enables scrolling
-  messageBox.parentElement.style.scrollbarWidth = "none"; // Hides scrollbar (Firefox)
-  messageBox.parentElement.style.msOverflowStyle = "none"; // Hides scrollbar (IE/Edge)
-  messageBox.parentElement.style.setProperty("::-webkit-scrollbar", "none"); // Hides scrollbar (Chrome, Safari)
-
   setTimeout(() => {
     messageBox.parentElement.scrollTo({ top: messageBox.parentElement.scrollHeight, behavior: 'smooth' });
   }, 100);
@@ -197,22 +193,11 @@ function appendOutgoingMessage(message) {
         </header>
 
         {/* Conversation Area */}
-        <div className="conversation-area flex-grow flex flex-col p-4 space-y-2 overflow-y-auto">
+        <div className="conversation-area flex-grow no-scrollbar flex flex-col p-4 space-y-2 overflow-y-auto">
           {/* Incoming Message */}
           <div
             ref={messageBox}
-          className="message-box flex flex-col items-start">
-            <div className="incoming message bg-white text-black p-2 rounded-lg max-w-[75%] shadow-md">
-              <small className="text-gray-500">exam@gmail.com</small>
-              <p>Lorem ipsum dolor sit amet.</p>
-            </div>
-          </div>
-
-          {/* Outgoing Message */}
-          <div className="message-box flex flex-col items-end">
-            <div className="outgoing message bg-blue-600 text-white p-3 rounded-lg max-w-[75%] shadow-md">
-              <p>Hello! How are you?</p>
-            </div>
+          className="message-box flex flex-col items-start no-scrollbar ">
           </div>
         </div>
 
@@ -227,9 +212,10 @@ function appendOutgoingMessage(message) {
         send();
       }
     }}
-    className="flex-grow p-3 px-3 border border-gray-300 rounded-lg outline-none 
-               text-left bg-white resize-none overflow-y-auto max-h-25 
-               no-scrollbar"
+    className="w-full p-2 px-2 border border-gray-300 rounded-lg outline-none 
+    text-left bg-white resize-none overflow-y-auto h-12 max-h-16 
+    no-scrollbar"
+
     placeholder="Enter message..."
     rows="2"
   />
