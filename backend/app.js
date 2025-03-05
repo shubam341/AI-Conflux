@@ -5,6 +5,7 @@ import userRoutes from './routes/user.routes.js';
 import projectRoutes from './routes/project.routes.js'
 import cookieParser from 'cookie-parser';
 import cors from 'cors'
+import  aiRoutes from './routes/ai.routes.js'
 connect();
 
 //App installation
@@ -21,6 +22,9 @@ app.use('/users',userRoutes);
 
 //project authentication
 app.use('/projects',projectRoutes)
+
+//ai authentication
+app.use("/ai",aiRoutes)
 
 app.get('/',(req,res)=>{
     res.send('Hello World')
