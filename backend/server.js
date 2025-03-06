@@ -1,103 +1,110 @@
-import 'dotenv/config.js';
+import 'dotenv/config';
 import http from 'http';
 import app from './app.js';
 import { Server } from 'socket.io';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
-import projectModel from './models/project.model.js'
+import projectModel from './models/project.model.js';
 import { generateResult } from './services/ai.service.js';
-
 
 const port = process.env.PORT || 3000;
 
-const server = http.createServer(app);
 
-//socket.io
+
+const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
         origin: '*'
     }
 });
 
-// Middleware for socket authentication
-io.use(async(socket, next) => {
+
+io.use(async (socket, next) => {
+
     try {
-        const token = socket.handshake.auth?.token || socket.handshake.headers.authorization?.split(' ')[1];
 
-      //when socket connect it automatically connected to the room
-      const projectId=socket.handshake.query.projectId;
-      //cheecking  mongoose id valid
-      if (!mongoose.Types.ObjectId.isValid(projectId)) {
-        return next(new Error('Invalid projectId'));
-      }
-      
+        const token = socket.handshake.auth?.token || socket.handshake.headers.authorization?.split(' ')[ 1 ];
+        const projectId = socket.handshake.query.projectId;
 
-      socket.project=await projectModel.findById(projectId)
+        if (!mongoose.Types.ObjectId.isValid(projectId)) {
+            return next(new Error('Invalid projectId'));
+        }
+
+
+        socket.project = await projectModel.findById(projectId);
+
 
         if (!token) {
-            return next(new Error('Authentication error: No token provided'));
+            return next(new Error('Authentication error'))
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         if (!decoded) {
-            return next(new Error('Authentication error: Invalid token'));
+            return next(new Error('Authentication error'))
         }
 
+
         socket.user = decoded;
+
         next();
+
     } catch (error) {
-        next(new Error('Authentication error: ' + error.message));
+        next(error)
     }
-});
 
-io.on('connection', (socket) => {
+})
 
-    socket.roomId=socket.project._id.toString();
 
-    console.log('A user connected');
+io.on('connection', socket => {
+    socket.roomId = socket.project._id.toString()
+
+
+    console.log('a user connected');
+
+
 
     socket.join(socket.roomId);
 
-    socket.on('project-message',async data=>{
+    socket.on('project-message', async data => {
 
-        //creating ai setup in chat
-      const message=data.message;
-     
-      const aiIsPresentInMessage=message.includes("@ai");
+        const message = data.message;
 
-      if(aiIsPresentInMessage){
-  
-     const prompt =message.replace('@ai', '');
+        const aiIsPresentInMessage = message.includes('@ai');
+        socket.broadcast.to(socket.roomId).emit('project-message', data)
 
-     const result=await generateResult(prompt)
-   
-     io.to(socket.roomId).emit('project-message',{
-        message: result,
-        sender:{
-            _id:'ai',
-            email:'AI'
+        if (aiIsPresentInMessage) {
+
+
+            const prompt = message.replace('@ai', '');
+
+            const result = await generateResult(prompt);
+
+
+            io.to(socket.roomId).emit('project-message', {
+                message: result,
+                sender: {
+                    _id: 'ai',
+                    email: 'AI'
+                }
+            })
+
+
+            return
         }
-     })
-       return 
-        
-      }
 
-      socket.broadcast.to(socket.roomId).emit('project-message',{
 
-      })
-    });
-
-    socket.on('event', (data) => {
-        console.log('Received event:', data);
-    });
+    })
 
     socket.on('disconnect', () => {
-        console.log('User disconnected');
+        console.log('user disconnected');
         socket.leave(socket.roomId)
     });
 });
 
+
+
+
 server.listen(port, () => {
     console.log(`Server is running on port ${port}`);
-});
+})
