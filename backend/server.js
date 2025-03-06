@@ -74,7 +74,7 @@ io.on('connection', (socket) => {
    
      io.to(socket.roomId).emit('project-message',{
         message: result,
-        user:{
+        sender:{
             _id:'ai',
             email:'AI'
         }

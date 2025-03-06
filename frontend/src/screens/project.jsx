@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import axios from '../config/axios'
 import { initializeSocket,receiveMessage,sendMessage } from "../config/socket";
 import {UserContext} from '../context/user.context'
+import Markdown from 'markdown-to-jsx'
 
 const Project = () => {
   const location = useLocation();
@@ -118,11 +119,24 @@ function appendIncomingMessage(messageObject) {
     'flex-col'
   );
 
+  if(messageObject.sender._id==='ai') {
+
+    //creating markdown 
+    const markDown=(<Markdown>{messageObject.message}</Markdown>)
+
+    message.innerHTML = `
+    <small class="text-gray-500 block mb-1">${messageObject.sender.email}</small>
+    <p class="text-sm">${markDown}</p>`
+  }
+  else{
+
+  
+
   message.innerHTML = `
       <small class="text-gray-500 block mb-1">${messageObject.sender.email}</small>
       <p class="text-sm">${messageObject.message}</p>
   `;
-
+  }
   messageBox.appendChild(message);
 scrollToBottom()
 
