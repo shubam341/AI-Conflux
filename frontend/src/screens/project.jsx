@@ -6,6 +6,14 @@ import axios from "../config/axios";
 import { initializeSocket, receiveMessage, sendMessage } from "../config/socket";
 import { UserContext } from "../context/user.context";
 import Markdown from "markdown-to-jsx"; // ✅ Importing markdown-to-jsx
+import {use} from 'react'
+
+
+
+
+//syntax highlighter
+
+
 
 const Project = () => {
   const location = useLocation();
@@ -120,13 +128,20 @@ const Project = () => {
                     : "bg-white text-black self-start"
                 }`}
               >
-                <small className={`block mb-1 ${msg.sender.email === user.email ? "text-gray-300" : "text-gray-500"}`}>
-                  {msg.sender.email}
-                </small>
-                <Markdown className="text-sm">{msg.message}</Markdown> {/* ✅ Using markdown-to-jsx */}
+                <small className={`block mb-1 ${msg.sender.email === user.email ? "text-gray-300 max-w-80" : "text-gray-500"}`}>
+  {msg.sender.email}
+</small>
+
+<div className="overflow-auto no-scrollbar ">
+  <Markdown className={`text-sm max-w-full text-white ${msg.sender.email !== user.email ? "bg-slate-800 " : ""}`}>
+    {msg.message}
+  </Markdown> {/* Using markdown-to-jsx */}
+</div>
+
+
               </div>
             ))}
-            <div ref={lastMessageRef} /> {/* ✅ Dummy element for scrolling */}
+            <div ref={lastMessageRef} /> {/*  Dummy element for scrolling */}
           </div>
         </div>
 
