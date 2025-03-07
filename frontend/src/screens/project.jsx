@@ -154,9 +154,16 @@ const Project = () => {
                           {msg.message.replace(/```/g, "")}
                         </code>
                       </pre>
-                    ) : (
-                      <Markdown className="text-sm">{msg.message}</Markdown>
-                    )}
+                    ) :(() => {
+                      try {
+                        const parsedMessage = JSON.parse(msg.message);
+                        return <Markdown className="text-sm">{parsedMessage.text}</Markdown>;
+                      } catch {
+                        return <Markdown className="text-sm">{msg.message}</Markdown>;
+                      }
+                    })()
+                  }                    
+                    
                   </div>
                 </div>
               );
