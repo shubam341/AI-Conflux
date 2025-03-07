@@ -7,7 +7,7 @@ import { initializeSocket, receiveMessage, sendMessage } from "../config/socket"
 import { UserContext } from "../context/user.context";
 import Markdown from "markdown-to-jsx";
 import hljs from "highlight.js";
-import "highlight.js/styles/nord.css"; // ✅ Import a style for syntax highlighting
+import "highlight.js/styles/nord.css"; //  Import a style for syntax highlighting
 
 const Project = () => {
   const location = useLocation();
@@ -20,7 +20,7 @@ const Project = () => {
   const messageBox = useRef(null);
   const lastMessageRef = useRef(null);
   const [users, setUsers] = useState([]);
-  const [messages, setMessages] = useState([]); // ✅ Store messages
+  const [messages, setMessages] = useState([]); //  Store messages
 
   const handleUserClick = (id) => {
     setSelectedUserId((prevSelectedUserId) => {
@@ -58,7 +58,7 @@ const Project = () => {
     };
 
     sendMessage("project-message", newMessage);
-    setMessages((prevMessages) => [...prevMessages, newMessage]); // ✅ Updating state
+    setMessages((prevMessages) => [...prevMessages, newMessage]); //  Updating state
     setMessage("");
   };
 
@@ -66,7 +66,7 @@ const Project = () => {
     initializeSocket(project._id);
 
     receiveMessage("project-message", (data) => {
-      setMessages((prevMessages) => [...prevMessages, data]); // ✅ Updating state
+      setMessages((prevMessages) => [...prevMessages, data]); //  Updating state
     });
 
     axios.get(`/projects/get-project/${location.state.project._id}`).then((res) => {
@@ -87,17 +87,17 @@ const Project = () => {
     if (lastMessageRef.current) {
       lastMessageRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
     }
-  }, [messages]); // ✅ Scrolls to the latest message
+  }, [messages]); //  Scrolls to the latest message
 
 
   
   useEffect(() => {
     // Find all code blocks inside AI-generated messages
     document.querySelectorAll(".ai-message pre code").forEach((block) => {
-      // ✅ Check if it's already highlighted before re-highlighting
+      //  Check if it's already highlighted before re-highlighting
       if (!block.dataset.highlighted) {
         hljs.highlightElement(block);
-        block.dataset.highlighted = "true"; // ✅ Mark as highlighted to prevent errors
+        block.dataset.highlighted = "true"; //  Mark as highlighted to prevent errors
       }
     });
   }, [messages]);
@@ -279,3 +279,9 @@ const Project = () => {
 };
 
 export default Project;
+
+
+
+
+
+
