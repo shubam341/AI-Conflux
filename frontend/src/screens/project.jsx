@@ -1,14 +1,41 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState, useContext, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 import axios from "../config/axios";
 import { initializeSocket, receiveMessage, sendMessage } from "../config/socket";
 import { UserContext } from "../context/user.context";
 import Markdown from "markdown-to-jsx";
 import hljs from "highlight.js";
 import "highlight.js/styles/nord.css"; //  Import a style for syntax highlighting
+import PropTypes from "prop-types";
 
+// syntax highlighted function
+function SyntaxHighlightedCode(props) { 
+  const ref = useRef(null);
+
+  React.useEffect(() => {
+    if (ref.current && props.className?.includes('lang-') && window.hljs) {
+      window.hljs.highlightElement(ref.current);
+
+      // hljs won't reprocess the element unless this attribute is removed
+      ref.current.removeAttribute("data-highlighted");
+    }
+  }, [props.className, props.children]);
+
+  return <code {...props} ref={ref} />;
+}
+
+// ✅ Add PropTypes validation
+SyntaxHighlightedCode.propTypes = {
+  className: PropTypes.string,  // Ensures className is a string
+  children: PropTypes.node,  // Ensures children can be any valid React node
+};
+
+
+
+
+//importing state variables
 const Project = () => {
   const location = useLocation();
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
@@ -17,11 +44,13 @@ const Project = () => {
   const [project, setProject] = useState(location.state.project);
   const [message, setMessage] = useState("");
   const { user } = useContext(UserContext);
-  const messageBox = useRef(null);
+  const messageBox = React.createRef()
   const lastMessageRef = useRef(null);
   const [users, setUsers] = useState([]);
   const [messages, setMessages] = useState([]); //  Store messages
 
+
+//creating function for selection users
   const handleUserClick = (id) => {
     setSelectedUserId((prevSelectedUserId) => {
       const newSelectedUserId = new Set(prevSelectedUserId);
@@ -34,6 +63,9 @@ const Project = () => {
     });
   };
 
+
+
+  //creating function for collaborators
   function addCollaborators() {
     axios
       .put("/projects/add-user", {
@@ -49,27 +81,58 @@ const Project = () => {
       });
   }
 
+
+  //function to send message
   const send = () => {
-    if (!message.trim()) return;
 
-    const newMessage = {
-      message,
-      sender: user,
-    };
+    sendMessage('project-message', {
+        message,
+        sender: user
+    })
+    setMessages(prevMessages => [ ...prevMessages, { sender: user, message } ]) // Update messages state
+    setMessage("")
 
-    sendMessage("project-message", newMessage);
-    setMessages((prevMessages) => [...prevMessages, newMessage]); //  Updating state
-    setMessage("");
-  };
+}
 
+
+// function to get ai output
+function WriteAiMessage({ message }) {
+  const messageObject = JSON.parse(message);
+
+  return (
+    <div className="overflow-auto bg-slate-950 text-white rounded-sm p-2">
+      <Markdown
+        options={{
+          overrides: {
+            code: SyntaxHighlightedCode,
+          },
+        }}
+      >
+        {messageObject.text}
+      </Markdown>
+    </div>
+  );
+}
+
+
+
+
+//useeffect function for all users
   useEffect(() => {
     initializeSocket(project._id);
 
     receiveMessage("project-message", (data) => {
+      console.log(data)
       setMessages((prevMessages) => [...prevMessages, data]); //  Updating state
     });
 
+
+
+    //get project rendering function
     axios.get(`/projects/get-project/${location.state.project._id}`).then((res) => {
+      
+
+     console.log(res.data.project)
       setProject(res.data.project);
     });
 
@@ -83,24 +146,14 @@ const Project = () => {
       });
   }, []);
 
+
+
+//user effect for scrrol to view 
   useEffect(() => {
     if (lastMessageRef.current) {
       lastMessageRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
     }
   }, [messages]); //  Scrolls to the latest message
-
-
-  
-  useEffect(() => {
-    // Find all code blocks inside AI-generated messages
-    document.querySelectorAll(".ai-message pre code").forEach((block) => {
-      //  Check if it's already highlighted before re-highlighting
-      if (!block.dataset.highlighted) {
-        hljs.highlightElement(block);
-        block.dataset.highlighted = "true"; //  Mark as highlighted to prevent errors
-      }
-    });
-  }, [messages]);
   
   
 
@@ -124,118 +177,68 @@ const Project = () => {
           </button>
         </header>
 
-        <div className="conversation-area flex-grow no-scrollbar flex flex-col p-4 space-y-2 overflow-y-auto">
-          <div className="message-container flex flex-col gap-2 w-full p-2 overflow-y-auto h-[80vh]">
-            {messages.map((msg, index) => {
-              // ✅ Detect if message contains code using triple backticks
-              const isCodeMessage = msg.message.includes("```");
+        <div className="conversation-area pt-14 pb-10 flex-grow flex flex-col h-full relative">
 
-              return (
-                <div
-                  key={index}
-                  className={`p-3 rounded-lg shadow-md max-w-[75%] w-fit break-words whitespace-pre-wrap leading-relaxed ${
-                    msg.sender.email === user.email
-                      ? "ml-auto bg-blue-600 text-white self-end"
-                      : "bg-slate-600 text-white self-start"
-                  }`}
-                >
-                  <small
-                    className={`block mb-1 text-xs ${
-                      msg.sender.email === user.email ? "text-gray-300" : "text-gray-200"
-                    }`}
-                  >
-                    {msg.sender.email}
-                  </small>
+<div
+    ref={messageBox}
+    className="message-box p-1 flex-grow flex flex-col gap-1 overflow-auto max-h-full scrollbar-hide">
+    {messages.map((msg, index) => (
+        <div key={index} className={`${msg.sender._id === 'ai' ? 'max-w-80' : 'max-w-52'} ${msg.sender._id == user._id.toString() && 'ml-auto'}  message flex flex-col p-2 bg-slate-50 w-fit rounded-md`}>
+            <small className='opacity-65 text-xs'>{msg.sender.email}</small>
+            <div className='text-sm'>
+                {msg.sender._id === 'ai' ?
+                    WriteAiMessage(msg.message)
+                    : <p>{msg.message}</p>}
+            </div>
+        </div>
+    ))}
+</div>
 
-                  <div className={`max-w-full overflow-x-auto px-2 py-1 no-scrollbar ${isCodeMessage ? "ai-message" : ""}`}>
-                    {isCodeMessage ? (
-                      <pre>
-                        <code className="language-javascript">
-                          {msg.message.replace(/```/g, "")}
-                        </code>
-                      </pre>
-                    ) :(() => {
-                      try {
-                        const parsedMessage = JSON.parse(msg.message);
-                        return <Markdown className="text-sm">{parsedMessage.text}</Markdown>;
-                      } catch {
-                        return <Markdown className="text-sm">{msg.message}</Markdown>;
-                      }
-                    })()
-                  }                    
-                    
-                  </div>
+
+<div className="inputField w-full flex absolute bottom-0">
+                        <input
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            className='p-2 px-4 border-none outline-none flex-grow' type="text" placeholder='Enter message' />
+                        <button
+                            onClick={send}
+                            className='px-5 bg-slate-950 text-white'><i className="ri-send-plane-fill"></i></button>
+                    </div>
                 </div>
-              );
-            })}
-            <div ref={lastMessageRef} /> {/* Keeps chat scrolled to the latest message */}
-          </div>
-        </div>
+                <div className={`sidePanel w-full h-full flex flex-col gap-2 bg-slate-50 absolute transition-all ${isSidePanelOpen ? 'translate-x-0' : '-translate-x-full'} top-0`}>
+                    <header className='flex justify-between items-center px-4 p-2 bg-slate-200'>
 
-        <div className="inputField flex items-center bg-white border-t border-gray-300 p-2 w-full">
-          <textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                send();
-              }
-            }}
-            className="w-full p-2 px-2 border border-gray-300 rounded-lg outline-none 
-                text-left bg-white resize-none overflow-y-auto h-12 max-h-16 
-                no-scrollbar"
-            placeholder="Enter message..."
-            rows="2"
-          />
+                        <h1
+                            className='font-semibold text-lg'
+                        >Collaborators</h1>
 
-          <button
-            onClick={send}
-            className="ml-2 p-3 bg-blue-600 text-white rounded-lg 
-                 hover:bg-blue-700 hover:scale-105 active:scale-95 
-                 transition-all duration-200 ease-in-out shadow-md"
-          >
-            <i className="ri-send-plane-fill"></i>
-          </button>
-        </div>
+                        <button onClick={() => setIsSidePanelOpen(!isSidePanelOpen)} className='p-2'>
+                            <i className="ri-close-fill"></i>
+                        </button>
+                    </header>
+                    <div className="users flex flex-col gap-2">
 
-        {/* Side Panel for Collaborators */}
-        <div
-          className={`sidePanel w-full h-full no-scrollbar bg-slate-300 shadow-2xl absolute transition-transform duration-300 ease-in-out ${
-            isSidePanelOpen ? "translate-x-0" : "-translate-x-full"
-          } top-0 left-0 rounded-r-3xl border border-gray-400`}
-        >
-          <header className="flex justify-between items-center p-4 bg-slate-50 border-b border-gray-400 rounded-tr-3xl shadow-md">
-            <h2 className="text-lg font-bold text-gray-700">Collaborators</h2>
-            <button
-              onClick={() => setIsSidePanelOpen(!isSidePanelOpen)}
-              className="p-2 hover:bg-gray-300 rounded-full transition-all duration-200"
-            >
-              <i className="ri-close-large-line cursor-pointer text-2xl text-gray-600"></i>
-            </button>
-          </header>
 
-          {/* User List */}
-          <div className="users p-3 cursor-pointer space-y-4 overflow-y-auto h-[calc(100%-64px)] custom-scrollbar">
-           
-        {/* Creating map for users */}
-       {project.users && project.users.map((user, index) => {
-  return (
-    <div
-      key={index} // Added key prop
-      className="p-3 bg-white rounded-xl shadow-lg flex items-center space-x-2 border border-gray-400 hover:scale-105 transition-all duration-200"
-    >
-      <i className="ri-user-fill text-2xl text-gray-600"></i>
-      <h1 className="font-semibold text-gray-800">{user.email}</h1> {/* Dynamically display user name */}
+
+                    {users.map((user) => (
+  <div
+    key={user._id}
+    className={`user cursor-pointer hover:bg-slate-200 ${
+      selectedUserId.has(user._id) ? "bg-slate-300 rounded" : ""
+    } p-2 flex gap-2 items-center`}
+    onClick={() => handleUserClick(user._id)}
+  >
+    <div className="aspect-square relative rounded-full w-fit h-fit flex items-center justify-center p-5 text-white bg-slate-600 shadow-md transition-all duration-300 hover:bg-slate-700 hover:scale-110 hover:shadow-lg">
+      <i className="ri-user-fill absolute"></i>
     </div>
-  );
-})}
+    <h1 className="font-semibold text-lg">{user.email}</h1>
+  </div>
+))}
 
-    </div>
-      
-        </div>
-        
-      </section>
+
+</div>
+</div>
+</section>
 
 
        {/* Modal for Selecting Users */}
@@ -253,6 +256,10 @@ const Project = () => {
 
 
             </header>
+
+
+
+
 
             {/* User List in Modal */}
             <div className="users-list flex flex-col gap-2 mb-16 custom-scrollbar max-h-96 overflow-auto">
