@@ -69,6 +69,8 @@ const model = genAI.getGenerativeModel({
         },
 
     },
+
+
     "buildCommand": {
         mainItem: "npm",
             commands: [ "install" ]
@@ -81,6 +83,8 @@ const model = genAI.getGenerativeModel({
             commands: [ "app.js" ]
     }
 }
+
+
 
     user:Create an express application 
    
