@@ -1,5 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai"
-
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_KEY);
 const model = genAI.getGenerativeModel({
@@ -25,91 +24,69 @@ const model = genAI.getGenerativeModel({
 
                 const app = express();
 
-
                 app.get('/', (req, res) => {
                     res.send('Hello World!');
                 });
-
 
                 app.listen(3000, () => {
                     console.log('Server is running on port 3000');
                 })
                 "
-            
-        },
+            }
+        }
     },
 
-        "package.json": {
-            file: {
-                contents: "
+    "package.json": {
+        file: {
+            contents: "
 
-                {
-                    "name": "temp-server",
-                    "version": "1.0.0",
-                    "main": "index.js",
-                    "scripts": {
-                        "test": "echo \"Error: no test specified\" && exit 1"
-                    },
-                    "keywords": [],
-                    "author": "",
-                    "license": "ISC",
-                    "description": "",
-                    "dependencies": {
-                        "express": "^4.21.2"
-                    }
-}
-
-                
-                "
-                
-                
-
-            },
-
-        },
-
+            {
+                "name": "temp-server",
+                "version": "1.0.0",
+                "main": "index.js",
+                "scripts": {
+                    "test": "echo \"Error: no test specified\" && exit 1"
+                },
+                "keywords": [],
+                "author": "",
+                "license": "ISC",
+                "description": "",
+                "dependencies": {
+                    "express": "^4.21.2"
+                }
+            }
+            "
+        }
     },
-
 
     "buildCommand": {
         mainItem: "npm",
-            commands: [ "install" ]
+        commands: [ "install" ]
     },
 
-
-    
     "startCommand": {
         mainItem: "node",
-            commands: [ "app.js" ]
+        commands: [ "app.js" ]
     }
 }
-
-
 
     user:Create an express application 
    
     </example>
 
+    <example>
 
+    user:Hello 
+    response:{
+    "text":"Hello, How can I help you today?"
+    }
     
-       <example>
+    </example>
 
-       user:Hello 
-       response:{
-       "text":"Hello, How can I help you today?"
-       }
-       
-       </example>
-    
- IMPORTANT : don't use file name like routes/index.js
-       
-       
-    `
+ IMPORTANT : don't use file name like routes/index.js`
 });
 
 export const generateResult = async (prompt) => {
-
     const result = await model.generateContent(prompt);
-
-    return result.response.text()
-}
+    return result.response.text();
+};

@@ -1,7 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react/jsx-key */
-/* eslint-disable react/no-children-prop */
-/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useContext, useRef } from 'react'
 import { UserContext } from '../context/user.context'
@@ -11,183 +7,282 @@ import { initializeSocket, receiveMessage, sendMessage } from '../config/socket'
 import Markdown from 'markdown-to-jsx'
 import hljs from 'highlight.js';
 import { getWebContainer } from '../config/webcontainer'
+import PropTypes from 'prop-types';
 
 
 function SyntaxHighlightedCode(props) {
-    const ref = useRef(null)
+    const ref = useRef(null);
 
-    React.useEffect(() => {
-        if (ref.current && props.className?.includes('lang-') && window.hljs) {
-            window.hljs.highlightElement(ref.current)
+    useEffect(() => {
+        if (ref.current && props.className?.includes('lang-')) {
+            hljs.highlightElement(ref.current);
 
             // hljs won't reprocess the element unless this attribute is removed
-            ref.current.removeAttribute('data-highlighted')
+            ref.current.removeAttribute('data-highlighted');
         }
-    }, [ props.className, props.children ])
+    }, [props.className, props.children]);
 
-    return <code {...props} ref={ref} />
+    return <code {...props} ref={ref} />;
 }
+
+// ✅ Add PropTypes validation
+SyntaxHighlightedCode.propTypes = {
+    className: PropTypes.string,
+    children: PropTypes.node
+};
 
 
 const Project = () => {
+    const location = useLocation();
 
-    const location = useLocation()
+    const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedUserId, setSelectedUserId] = useState(new Set()); // Initialized as Set
+    const [project, setProject] = useState(location.state?.project || {}); // ✅ Prevent crash if `location.state` is undefined
+    const [message, setMessage] = useState('');
+    const { user } = useContext(UserContext);
+    const messageBox = useRef(null); // ✅ Changed to `useRef()`
 
-    const [ isSidePanelOpen, setIsSidePanelOpen ] = useState(false)
-    const [ isModalOpen, setIsModalOpen ] = useState(false)
-    const [ selectedUserId, setSelectedUserId ] = useState(new Set()) // Initialized as Set
-    const [ project, setProject ] = useState(location.state.project)
-    const [ message, setMessage ] = useState('')
-    const { user } = useContext(UserContext)
-    const messageBox = React.createRef()
+    const [users, setUsers] = useState([]);
+    const [messages, setMessages] = useState([]); // ✅ New state variable for messages
+    const [fileTree, setFileTree] = useState({});
 
-    const [ users, setUsers ] = useState([])
-    const [ messages, setMessages ] = useState([]) // New state variable for messages
-    const [ fileTree, setFileTree ] = useState({})
+    const [currentFile, setCurrentFile] = useState(null);
+    const [openFiles, setOpenFiles] = useState([]);
 
-    const [ currentFile, setCurrentFile ] = useState(null)
-    const [ openFiles, setOpenFiles ] = useState([])
+    const [webContainer, setWebContainer] = useState(null);
+    const [iframeUrl, setIframeUrl] = useState(null);
 
-    const [ webContainer, setWebContainer ] = useState(null)
-    const [ iframeUrl, setIframeUrl ] = useState(null)
+    const [runProcess, setRunProcess] = useState(null);
 
-    const [ runProcess, setRunProcess ] = useState(null)
 
     const handleUserClick = (id) => {
         setSelectedUserId(prevSelectedUserId => {
-            const newSelectedUserId = new Set(prevSelectedUserId);
+            const newSelectedUserId = new Set(prevSelectedUserId); // ✅ Copy previous Set
+    
             if (newSelectedUserId.has(id)) {
                 newSelectedUserId.delete(id);
             } else {
                 newSelectedUserId.add(id);
             }
-
-            return newSelectedUserId;
+    
+            return new Set(newSelectedUserId); // ✅ Ensure React detects state change
         });
-
-
-    }
+    };
+    
 
 
     function addCollaborators() {
-
+        if (!location.state?.project?._id) {
+            console.error("Project ID is missing.");
+            return;
+        }
+    
         axios.put("/projects/add-user", {
             projectId: location.state.project._id,
-            users: Array.from(selectedUserId)
-        }).then(res => {
-            console.log(res.data)
-            setIsModalOpen(false)
-
-        }).catch(err => {
-            console.log(err)
+            users: [...selectedUserId] // ✅ More concise way to convert Set to Array
         })
-
+        .then(res => {
+            console.log("Collaborators added:", res.data);
+            setIsModalOpen(false);
+        })
+        .catch(err => {
+            console.error("Error adding collaborators:", err.response?.data || err.message);
+        });
     }
-
+    
     const send = () => {
-
+        const trimmedMessage = message.trim(); // ✅ Trim whitespace
+    
+        if (!trimmedMessage) return; // ✅ Prevent empty messages
+    
         sendMessage('project-message', {
-            message,
+            message: trimmedMessage,
             sender: user
-        })
-        setMessages(prevMessages => [ ...prevMessages, { sender: user, message } ]) // Update messages state
-        setMessage("")
+        });
+    
+        setMessages(prevMessages => [
+            ...prevMessages,
+            { sender: user, message: trimmedMessage } // ✅ Ensure message is trimmed
+        ]);
+    
+        setMessage(""); // ✅ Clear input after sending
+    };
+    
 
-    }
-
-    function WriteAiMessage(message) {
-
-        const messageObject = JSON.parse(message)
-
+    function WriteAiMessage({ message }) {
+        if (!message) return null; // ✅ Prevents rendering if message is missing
+    
+        let messageText;
+    
+        try {
+            // If message is a JSON string, parse it
+            messageText = typeof message === "string" ? JSON.parse(message)?.text : message.text;
+        } catch (error) {
+            console.warn("Received plain text AI message:", message);
+            messageText = message; // ✅ Use raw text if JSON parsing fails
+        }
+    
+        if (!messageText) {
+            return <div className="text-red-500">Error: Missing AI message content</div>;
+        }
+    
         return (
-            <div
-                className='overflow-auto bg-slate-950 text-white rounded-sm p-2'
-            >
+            <div className="overflow-auto bg-slate-950 text-white rounded-sm p-2">
                 <Markdown
-                    children={messageObject.text}
                     options={{
                         overrides: {
                             code: SyntaxHighlightedCode,
                         },
                     }}
-                />
-            </div>)
+                >
+                    {messageText}
+                </Markdown>
+            </div>
+        );
     }
-
+    
+    
+    
+    
     useEffect(() => {
-
-        initializeSocket(project._id)
-
-        if (!webContainer) {
-            getWebContainer().then(container => {
-                setWebContainer(container)
-                console.log("container started")
-            })
-        }
-
-
-        receiveMessage('project-message', data => {
-
-            console.log(data)
-            
-            if (data.sender._id == 'ai') {
-
-
-                const message = JSON.parse(data.message)
-
-                console.log(message)
-
-                webContainer?.mount(message.fileTree)
-
-                if (message.fileTree) {
-                    setFileTree(message.fileTree || {})
+        let isMounted = true; // ✅ Prevents state updates if component unmounts
+    
+        if (!project?._id) return; // ✅ Ensures project ID exists
+    
+        initializeSocket(project._id);
+    
+        const handleMessage = async (data) => {
+            console.log(data);
+    
+            if (data.sender._id === 'ai') {
+                let message;
+                try {
+                    message = JSON.parse(data.message);
+                } catch (error) {
+                    console.error("Invalid JSON received from AI:", error);
+                    return;
                 }
-                setMessages(prevMessages => [ ...prevMessages, data ]) // Update messages state
+    
+                console.log(message);
+    
+                if (message.fileTree) {
+                    // ✅ Sanitize file names
+                    const sanitizedFileTree = Object.keys(message.fileTree).reduce((acc, filePath) => {
+                        let sanitizedPath = filePath.replace(/^\/+/, ""); // ✅ Remove leading "/"
+                        acc[sanitizedPath] = message.fileTree[filePath];
+                        return acc;
+                    }, {});
+    
+                    console.log("Sanitized File Tree:", sanitizedFileTree);
+    
+                    try {
+                        if (!webContainer) {
+                            console.warn("WebContainer is not initialized yet, initializing now...");
+                            const newContainer = await getWebContainer();
+                            if (newContainer) {
+                                setWebContainer((prevContainer) => {
+                                    if (!prevContainer) {
+                                        newContainer.mount(sanitizedFileTree); // ✅ Mount only if it's the first time
+                                        return newContainer;
+                                    }
+                                    return prevContainer;
+                                });
+                            } else {
+                                console.error("Failed to initialize WebContainer.");
+                            }
+                        } else {
+                            webContainer.mount(sanitizedFileTree);
+                        }
+    
+                        if (isMounted) {
+                            setFileTree((prevFileTree) => ({
+                                ...prevFileTree,
+                                ...sanitizedFileTree,
+                            }));
+                        }
+                    } catch (error) {
+                        console.error("Error initializing WebContainer:", error);
+                    }
+                }
+    
+                // ✅ FIX: Ensure AI message text is added to `messages`
+                if (message.text) {
+                    setMessages((prevMessages) => [
+                        ...prevMessages,
+                        { sender: { _id: 'ai', name: 'AI' }, message: message.text },
+                    ]);
+                }
             } else {
-
-
-                setMessages(prevMessages => [ ...prevMessages, data ]) // Update messages state
+                setMessages((prevMessages) => [...prevMessages, data]);
             }
-        })
+        };
+    
+        receiveMessage('project-message', handleMessage);
+    
+        axios
+            .get(`/projects/get-project/${project._id}`)
+            .then((res) => {
+                console.log(res.data.project);
+                if (isMounted) {
+                    setProject(res.data.project);
+                    setFileTree(res.data.project.fileTree || {});
+                }
+            })
+            .catch((err) => console.error("Error fetching project:", err));
+    
+        axios
+            .get('/users/all')
+            .then((res) => {
+                if (isMounted) setUsers(res.data.users);
+            })
+            .catch((err) => console.error("Error fetching users:", err));
+    
+        return () => {
+            isMounted = false; // ✅ Prevents state updates if unmounted
+        };
+    }, [project._id]); // ✅ Removed `webContainer` from dependencies to avoid re-renders
+    
+    
+    
 
-
-        axios.get(`/projects/get-project/${location.state.project._id}`).then(res => {
-
-            console.log(res.data.project)
-
-            setProject(res.data.project)
-            setFileTree(res.data.project.fileTree || {})
-        })
-
-        axios.get('/users/all').then(res => {
-
-            setUsers(res.data.users)
-
-        }).catch(err => {
-
-            console.log(err)
-
-        })
-
-    }, [])
-
-    function saveFileTree(ft) {
-        axios.put('/projects/update-file-tree', {
-            projectId: project._id,
-            fileTree: ft
-        }).then(res => {
-            console.log(res.data)
-        }).catch(err => {
-            console.log(err)
-        })
+function saveFileTree(ft) {
+    if (!project?._id) {
+        console.error("Project ID is missing. Cannot save file tree.");
+        return;
     }
+
+    if (!ft || Object.keys(ft).length === 0) {
+        console.warn("Empty file tree. Skipping update.");
+        return;
+    }
+
+    axios.put('/projects/update-file-tree', {
+        projectId: project._id,
+        fileTree: ft
+    })
+    .then(res => {
+        console.log("File tree updated successfully:", res.data);
+    })
+    .catch(err => {
+        console.error("Error updating file tree:", err.response?.data || err.message);
+    });
+}
+
 
 
     // Removed appendIncomingMessage and appendOutgoingMessage functions
 
     function scrollToBottom() {
-        messageBox.current.scrollTop = messageBox.current.scrollHeight
+        if (messageBox?.current) {
+            setTimeout(() => {
+                messageBox.current.scrollTop = messageBox.current.scrollHeight;
+            }, 0);
+        } else {
+            console.warn("Message box is not available yet.");
+        }
     }
+    
 
     return (
         <main className='h-screen w-screen flex'>
@@ -206,16 +301,15 @@ const Project = () => {
                     <div
                         ref={messageBox}
                         className="message-box p-1 flex-grow flex flex-col gap-1 overflow-auto max-h-full scrollbar-hide">
-                        {messages.map((msg, index) => (
-                            <div key={index} className={`${msg.sender._id === 'ai' ? 'max-w-80' : 'max-w-52'} ${msg.sender._id == user._id.toString() && 'ml-auto'}  message flex flex-col p-2 bg-slate-50 w-fit rounded-md`}>
-                                <small className='opacity-65 text-xs'>{msg.sender.email}</small>
-                                <div className='text-sm'>
-                                    {msg.sender._id === 'ai' ?
-                                        WriteAiMessage(msg.message)
-                                        : <p>{msg.message}</p>}
-                                </div>
-                            </div>
-                        ))}
+                       {messages.map((msg, index) => (
+    <div key={index} className={`${msg.sender._id === 'ai' ? 'max-w-80' : 'max-w-52'} ${msg.sender._id == user._id.toString() && 'ml-auto'}  message flex flex-col p-2 bg-slate-50 w-fit rounded-md`}>
+        <small className='opacity-65 text-xs'>{msg.sender.email || 'AI Assistant'}</small>
+        <div className='text-sm'>
+            {msg.sender._id === 'ai' ? <WriteAiMessage message={msg.message} /> : <p>{msg.message}</p>}
+        </div>
+    </div>
+))}
+
                     </div>
 
                     <div className="inputField w-full flex absolute bottom-0">
@@ -240,22 +334,16 @@ const Project = () => {
                         </button>
                     </header>
                     <div className="users flex flex-col gap-2">
+    {project.users && project.users.map(user => (
+        <div key={user._id} className="user cursor-pointer hover:bg-slate-200 p-2 flex gap-2 items-center">
+            <div className='aspect-square rounded-full w-fit h-fit flex items-center justify-center p-5 text-white bg-slate-600'>
+                <i className="ri-user-fill absolute"></i>
+            </div>
+            <h1 className='font-semibold text-lg'>{user.email}</h1>
+        </div>
+    ))}
+</div>
 
-                        {project.users && project.users.map(user => {
-
-
-                            return (
-                                <div className="user cursor-pointer hover:bg-slate-200 p-2 flex gap-2 items-center">
-                                    <div className='aspect-square rounded-full w-fit h-fit flex items-center justify-center p-5 text-white bg-slate-600'>
-                                        <i className="ri-user-fill absolute"></i>
-                                    </div>
-                                    <h1 className='font-semibold text-lg'>{user.email}</h1>
-                                </div>
-                            )
-
-
-                        })}
-                    </div>
                 </div>
             </section>
 
@@ -408,14 +496,18 @@ const Project = () => {
                             </button>
                         </header>
                         <div className="users-list flex flex-col gap-2 mb-16 max-h-96 overflow-auto">
-                            {users.map(user => (
-                                <div key={user.id} className={`user cursor-pointer hover:bg-slate-200 ${Array.from(selectedUserId).indexOf(user._id) != -1 ? 'bg-slate-200' : ""} p-2 flex gap-2 items-center`} onClick={() => handleUserClick(user._id)}>
-                                    <div className='aspect-square relative rounded-full w-fit h-fit flex items-center justify-center p-5 text-white bg-slate-600'>
-                                        <i className="ri-user-fill absolute"></i>
-                                    </div>
-                                    <h1 className='font-semibold text-lg'>{user.email}</h1>
-                                </div>
-                            ))}
+                          {users.map(user => (
+    <div key={user._id} 
+        className={`user cursor-pointer hover:bg-slate-200 ${selectedUserId.has(user._id) ? 'bg-slate-200' : ""} p-2 flex gap-2 items-center`} 
+        onClick={() => handleUserClick(user._id)}>
+        
+        <div className='aspect-square relative rounded-full w-fit h-fit flex items-center justify-center p-5 text-white bg-slate-600'>
+            <i className="ri-user-fill absolute"></i>
+        </div>
+        <h1 className='font-semibold text-lg'>{user.email}</h1>
+    </div>
+))}
+
                         </div>
                         <button
                             onClick={addCollaborators}
