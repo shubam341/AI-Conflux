@@ -120,7 +120,7 @@ export const updateFileTree = async ({ projectId, fileTree }) => {
 
     if (!mongoose.Types.ObjectId.isValid(projectId)) {
         throw new Error("Invalid projectId")
-    }; 
+    }; git
 
     if (!fileTree) {
         throw new Error("fileTree is required")
