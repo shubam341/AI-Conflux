@@ -1,5 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/jsx-key */
 /* eslint-disable react/no-children-prop */
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useContext, useRef } from 'react'
 import { UserContext } from '../context/user.context'
@@ -8,36 +10,23 @@ import axios from '../config/axios'
 import { initializeSocket, receiveMessage, sendMessage } from '../config/socket'
 import Markdown from 'markdown-to-jsx'
 import hljs from 'highlight.js';
-import { getWebContainer } from '../config/webContainer'
-import PropTypes from "prop-types";
+import { getWebContainer } from '../config/webcontainer'
 
-function SyntaxHighlightedCode({ className, children, ...rest }) {
-    const ref = useRef(null);
 
-    useEffect(() => {
-        if (ref.current && className?.includes("lang-") && window.hljs) {
-            window.hljs.highlightElement(ref.current);
-            ref.current.removeAttribute("data-highlighted"); // Ensure reprocessing
+function SyntaxHighlightedCode(props) {
+    const ref = useRef(null)
+
+    React.useEffect(() => {
+        if (ref.current && props.className?.includes('lang-') && window.hljs) {
+            window.hljs.highlightElement(ref.current)
+
+            // hljs won't reprocess the element unless this attribute is removed
+            ref.current.removeAttribute('data-highlighted')
         }
-    }, [className, children]);
+    }, [ props.className, props.children ])
 
-    return (
-        <code ref={ref} className={className} {...rest}>
-            {children}
-        </code>
-    );
+    return <code {...props} ref={ref} />
 }
-
-// ✅ Add prop types validation
-SyntaxHighlightedCode.propTypes = {
-    className: PropTypes.string,
-    children: PropTypes.node.isRequired,
-};
-
-// ✅ Add default props in case className is undefined
-SyntaxHighlightedCode.defaultProps = {
-    className: "",
-};
 
 
 const Project = () => {
@@ -201,26 +190,17 @@ const Project = () => {
     }
 
     return (
-      <main className="h-screen w-screen overflow-x-hidden no-scrollbar custom-scrollbar overflow-y-auto flex bg-gray-200">
-      <section className="left flex flex-col h-full w-105 min-w-48 max-w-lg bg-slate-300 shadow-lg relative">
-        <header className="flex justify-between items-center p-3 px-4 bg-slate-100">
-          <button
-            className="flex items-center gap-1 to-5% cursor-pointer font-semibold hover:text-blue-600 transition-all"
-            onClick={() => setIsModalOpen(true)}
-          >
-            <i className="ri-add-large-fill"></i>
-            <p className="text-lg items-center">Add collaborators</p>
-          </button>
-
-          <button
-            onClick={() => setIsSidePanelOpen(!isSidePanelOpen)}
-            className="p-2 px-2 text-xl cursor-pointer transition-all duration-300 ease-in-out hover:text-blue-600 hover:scale-110"
-          >
-            <i className="ri-group-fill"></i>
-          </button>
-        </header>
-
-
+        <main className='h-screen w-screen flex'>
+            <section className="left relative flex flex-col h-screen min-w-96 bg-slate-300">
+                <header className='flex justify-between items-center p-2 px-4 w-full bg-slate-100 absolute z-10 top-0'>
+                    <button className='flex gap-2' onClick={() => setIsModalOpen(true)}>
+                        <i className="ri-add-fill mr-1"></i>
+                        <p>Add collaborator</p>
+                    </button>
+                    <button onClick={() => setIsSidePanelOpen(!isSidePanelOpen)} className='p-2'>
+                        <i className="ri-group-fill"></i>
+                    </button>
+                </header>
                 <div className="conversation-area pt-14 pb-10 flex-grow flex flex-col h-full relative">
 
                     <div
@@ -261,29 +241,23 @@ const Project = () => {
                     </header>
                     <div className="users flex flex-col gap-2">
 
+                        {project.users && project.users.map(user => {
 
 
-                    {users.map((user) => (
-  <div
-    key={user._id}
-    className={`user cursor-pointer hover:bg-slate-200 ${
-      selectedUserId.has(user._id) ? "bg-slate-300 rounded" : ""
-    } p-2 flex gap-2 items-center`}
-    onClick={() => handleUserClick(user._id)}
-  >
-    <div className="aspect-square relative rounded-full w-fit h-fit flex items-center justify-center p-5 text-white bg-slate-600 shadow-md transition-all duration-300 hover:bg-slate-700 hover:scale-110 hover:shadow-lg">
-      <i className="ri-user-fill absolute"></i>
-    </div>
-    <h1 className="font-semibold text-lg">{user.email}</h1>
-  </div>
-))}
+                            return (
+                                <div className="user cursor-pointer hover:bg-slate-200 p-2 flex gap-2 items-center">
+                                    <div className='aspect-square rounded-full w-fit h-fit flex items-center justify-center p-5 text-white bg-slate-600'>
+                                        <i className="ri-user-fill absolute"></i>
+                                    </div>
+                                    <h1 className='font-semibold text-lg'>{user.email}</h1>
+                                </div>
+                            )
 
 
-</div>
-</div>
-</section>
-
-
+                        })}
+                    </div>
+                </div>
+            </section>
 
             <section className="right  bg-red-50 flex-grow h-full flex">
 
