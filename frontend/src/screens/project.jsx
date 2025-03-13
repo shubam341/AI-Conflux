@@ -1,3 +1,6 @@
+/* eslint-disable no-undef */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useContext, useRef } from 'react'
 import { UserContext } from '../context/user.context'
@@ -111,16 +114,15 @@ const Project = () => {
     
 
     function WriteAiMessage({ message }) {
-        if (!message) return null; // ✅ Prevents rendering if message is missing
+        if (!message) return null; // Prevents rendering if message is missing
     
         let messageText;
     
         try {
-            // If message is a JSON string, parse it
+            // Try parsing the message as JSON if it's a string
             messageText = typeof message === "string" ? JSON.parse(message)?.text : message.text;
-        } catch (error) {
-            console.warn("Received plain text AI message:", message);
-            messageText = message; // ✅ Use raw text if JSON parsing fails
+        } catch {
+            messageText = message; // If parsing fails, use raw text
         }
     
         if (!messageText) {
@@ -144,7 +146,6 @@ const Project = () => {
     
     
     
-    
     useEffect(() => {
         let isMounted = true; // ✅ Prevents state updates if component unmounts
     
@@ -152,22 +153,30 @@ const Project = () => {
     
         initializeSocket(project._id);
     
+        const isValidJson = (str) => {
+            try {
+                JSON.parse(str);
+                return true;
+            } catch (error) {
+                return false;
+            }
+        };
+    
         const handleMessage = async (data) => {
-            console.log(data);
+            console.log("Received Message:", data);
     
             if (data.sender._id === 'ai') {
                 let message;
-                try {
-                    message = JSON.parse(data.message);
-                } catch (error) {
-                    console.error("Invalid JSON received from AI:", error);
+    
+                if (!isValidJson(data.message)) {
+                    console.error("Invalid JSON received from AI:", data.message);
                     return;
                 }
     
-                console.log(message);
+                message = JSON.parse(data.message);
+                console.log("Parsed AI Message:", message);
     
                 if (message.fileTree) {
-                    // ✅ Sanitize file names
                     const sanitizedFileTree = Object.keys(message.fileTree).reduce((acc, filePath) => {
                         let sanitizedPath = filePath.replace(/^\/+/, ""); // ✅ Remove leading "/"
                         acc[sanitizedPath] = message.fileTree[filePath];
@@ -178,21 +187,20 @@ const Project = () => {
     
                     try {
                         if (!webContainer) {
-                            console.warn("WebContainer is not initialized yet, initializing now...");
+                            console.warn("WebContainer not initialized, initializing...");
                             const newContainer = await getWebContainer();
-                            if (newContainer) {
-                                setWebContainer((prevContainer) => {
-                                    if (!prevContainer) {
-                                        newContainer.mount(sanitizedFileTree); // ✅ Mount only if it's the first time
-                                        return newContainer;
-                                    }
-                                    return prevContainer;
-                                });
-                            } else {
+    
+                            if (!newContainer) {
                                 console.error("Failed to initialize WebContainer.");
+                                return;
                             }
+    
+                            await newContainer.mount(sanitizedFileTree); // ✅ Ensure mounting completes
+                            setWebContainer(newContainer); // ✅ Store WebContainer instance
+    
                         } else {
-                            webContainer.mount(sanitizedFileTree);
+                            console.log("WebContainer already initialized, mounting files...");
+                            await webContainer.mount(sanitizedFileTree);
                         }
     
                         if (isMounted) {
@@ -201,12 +209,12 @@ const Project = () => {
                                 ...sanitizedFileTree,
                             }));
                         }
+    
                     } catch (error) {
-                        console.error("Error initializing WebContainer:", error);
+                        console.error("Error initializing/mounting WebContainer:", error);
                     }
                 }
     
-                // ✅ FIX: Ensure AI message text is added to `messages`
                 if (message.text) {
                     setMessages((prevMessages) => [
                         ...prevMessages,
@@ -220,10 +228,8 @@ const Project = () => {
     
         receiveMessage('project-message', handleMessage);
     
-        axios
-            .get(`/projects/get-project/${project._id}`)
+        axios.get(`/projects/get-project/${project._id}`)
             .then((res) => {
-                console.log(res.data.project);
                 if (isMounted) {
                     setProject(res.data.project);
                     setFileTree(res.data.project.fileTree || {});
@@ -231,8 +237,7 @@ const Project = () => {
             })
             .catch((err) => console.error("Error fetching project:", err));
     
-        axios
-            .get('/users/all')
+        axios.get('/users/all')
             .then((res) => {
                 if (isMounted) setUsers(res.data.users);
             })
@@ -243,45 +248,6 @@ const Project = () => {
         };
     }, [project._id]); // ✅ Removed `webContainer` from dependencies to avoid re-renders
     
-    
-    
-
-function saveFileTree(ft) {
-    if (!project?._id) {
-        console.error("Project ID is missing. Cannot save file tree.");
-        return;
-    }
-
-    if (!ft || Object.keys(ft).length === 0) {
-        console.warn("Empty file tree. Skipping update.");
-        return;
-    }
-
-    axios.put('/projects/update-file-tree', {
-        projectId: project._id,
-        fileTree: ft
-    })
-    .then(res => {
-        console.log("File tree updated successfully:", res.data);
-    })
-    .catch(err => {
-        console.error("Error updating file tree:", err.response?.data || err.message);
-    });
-}
-
-
-
-    // Removed appendIncomingMessage and appendOutgoingMessage functions
-
-    function scrollToBottom() {
-        if (messageBox?.current) {
-            setTimeout(() => {
-                messageBox.current.scrollTop = messageBox.current.scrollHeight;
-            }, 0);
-        } else {
-            console.warn("Message box is not available yet.");
-        }
-    }
     
 
     return (
@@ -334,15 +300,20 @@ function saveFileTree(ft) {
                         </button>
                     </header>
                     <div className="users flex flex-col gap-2">
-    {project.users && project.users.map(user => (
-        <div key={user._id} className="user cursor-pointer hover:bg-slate-200 p-2 flex gap-2 items-center">
-            <div className='aspect-square rounded-full w-fit h-fit flex items-center justify-center p-5 text-white bg-slate-600'>
-                <i className="ri-user-fill absolute"></i>
+    {project?.users?.map((user, index) => (
+        <div 
+            key={user._id || user.email || index}  // Ensures a unique key
+            className="user cursor-pointer hover:bg-slate-200 p-2 flex gap-2 items-center"
+        >
+            <div className="aspect-square rounded-full w-10 h-10 flex items-center justify-center text-white bg-slate-600">
+                <i className="ri-user-fill"></i>
             </div>
-            <h1 className='font-semibold text-lg'>{user.email}</h1>
+            <h1 className="font-semibold text-lg">{user.email}</h1>
         </div>
     ))}
 </div>
+
+
 
                 </div>
             </section>
