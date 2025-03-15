@@ -2,32 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <link rel="preload" href="https://w-corp-staticblitz.com/fetch.worker.853a9fbb.js" as="script">
+  <!-- Preload the worker script with the correct `as` attribute -->
+  <link rel="preload" href="https://w-corp-staticblitz.com/fetch.worker.853a9fbb.js" as="worker">
 
-  <link
-    rel="icon"
-    type="image/svg+xml"
-    href="/vite.svg"
-  />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vite + React</title>
+
+  <!-- Highlight.js styles -->
   <link
     rel="stylesheet"
-    href="/cdn/@highlightjs/cdn-assets@11.9.0/styles/nord.min.css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/nord.min.css"
   />
+
+  <!-- Highlight.js script -->
   <script
     crossorigin
-    src="/cdn/@highlightjs/cdn-assets@11.9.0/highlight.min.js"
+    src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
   ></script>
 </head>
 <body>
   <div id="root"></div>
-  <script
-    type="module"
-    src="/src/main.jsx"
-  ></script>
+  <script type="module" src="/src/main.jsx"></script>
+
+  <!-- Load the worker script dynamically -->
+  <script>
+    const worker = new Worker('https://w-corp-staticblitz.com/fetch.worker.853a9fbb.js');
+  </script>
 </body>
 </html>
