@@ -21,7 +21,7 @@ export const initializeSocket = (projectId) => {
 export const receiveMessage = (eventName, cb) => {
     if (socketInstance) {
         socketInstance.on(eventName, cb);  //  Correct: Use `.on()` to listen for events
-    }
+    };
 };
 
 // Function to send messages
