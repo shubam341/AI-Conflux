@@ -1,5 +1,5 @@
-/* eslint-disable no-undef */
 /* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/no-children-prop */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useContext, useRef } from 'react'
@@ -10,245 +10,171 @@ import { initializeSocket, receiveMessage, sendMessage } from '../config/socket'
 import Markdown from 'markdown-to-jsx'
 import hljs from 'highlight.js';
 import { getWebContainer } from '../config/webcontainer'
-import PropTypes from 'prop-types';
 
 
 function SyntaxHighlightedCode(props) {
-    const ref = useRef(null);
+    const ref = useRef(null)
 
-    useEffect(() => {
-        if (ref.current && props.className?.includes('lang-')) {
-            hljs.highlightElement(ref.current);
+    React.useEffect(() => {
+        if (ref.current && props.className?.includes('lang-') && window.hljs) {
+            window.hljs.highlightElement(ref.current)
 
             // hljs won't reprocess the element unless this attribute is removed
-            ref.current.removeAttribute('data-highlighted');
+            ref.current.removeAttribute('data-highlighted')
         }
-    }, [props.className, props.children]);
+    }, [ props.className, props.children ])
 
-    return <code {...props} ref={ref} />;
+    return <code {...props} ref={ref} />
 }
-
-// ✅ Add PropTypes validation
-SyntaxHighlightedCode.propTypes = {
-    className: PropTypes.string,
-    children: PropTypes.node
-};
 
 
 const Project = () => {
-    const location = useLocation();
 
-    const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedUserId, setSelectedUserId] = useState(new Set()); // Initialized as Set
-    const [project, setProject] = useState(location.state?.project || {}); // ✅ Prevent crash if `location.state` is undefined
-    const [message, setMessage] = useState('');
-    const { user } = useContext(UserContext);
-    const messageBox = useRef(null); // ✅ Changed to `useRef()`
+    const location = useLocation()
 
-    const [users, setUsers] = useState([]);
-    const [messages, setMessages] = useState([]); // ✅ New state variable for messages
-    const [fileTree, setFileTree] = useState({});
+    const [ isSidePanelOpen, setIsSidePanelOpen ] = useState(false)
+    const [ isModalOpen, setIsModalOpen ] = useState(false)
+    const [ selectedUserId, setSelectedUserId ] = useState(new Set()) // Initialized as Set
+    const [ project, setProject ] = useState(location.state.project)
+    const [ message, setMessage ] = useState('')
+    const { user } = useContext(UserContext)
+    const messageBox = React.createRef()
 
-    const [currentFile, setCurrentFile] = useState(null);
-    const [openFiles, setOpenFiles] = useState([]);
+    const [ users, setUsers ] = useState([])
+    const [ messages, setMessages ] = useState([]) // New state variable for messages
+    const [ fileTree, setFileTree ] = useState({})
 
-    const [webContainer, setWebContainer] = useState(null);
-    const [iframeUrl, setIframeUrl] = useState(null);
+    const [ currentFile, setCurrentFile ] = useState(null)
+    const [ openFiles, setOpenFiles ] = useState([])
 
-    const [runProcess, setRunProcess] = useState(null);
+    const [ webContainer, setWebContainer ] = useState(null)
+    const [ iframeUrl, setIframeUrl ] = useState(null)
 
+    const [ runProcess, setRunProcess ] = useState(null)
 
     const handleUserClick = (id) => {
         setSelectedUserId(prevSelectedUserId => {
-            const newSelectedUserId = new Set(prevSelectedUserId); // ✅ Copy previous Set
-    
+            const newSelectedUserId = new Set(prevSelectedUserId);
             if (newSelectedUserId.has(id)) {
                 newSelectedUserId.delete(id);
             } else {
                 newSelectedUserId.add(id);
             }
-    
-            return new Set(newSelectedUserId); // ✅ Ensure React detects state change
+
+            return newSelectedUserId;
         });
-    };
-    
+
+
+    }
 
 
     function addCollaborators() {
-        if (!location.state?.project?._id) {
-            console.error("Project ID is missing.");
-            return;
-        }
-    
+
         axios.put("/projects/add-user", {
             projectId: location.state.project._id,
-            users: [...selectedUserId] // ✅ More concise way to convert Set to Array
-        })
-        .then(res => {
-            console.log("Collaborators added:", res.data);
-            setIsModalOpen(false);
-        })
-        .catch(err => {
-            console.error("Error adding collaborators:", err.response?.data || err.message);
-        });
-    }
-    
-    const send = () => {
-        const trimmedMessage = message.trim(); // ✅ Trim whitespace
-    
-        if (!trimmedMessage) return; // ✅ Prevent empty messages
-    
-        sendMessage('project-message', {
-            message: trimmedMessage,
-            sender: user
-        });
-    
-        setMessages(prevMessages => [
-            ...prevMessages,
-            { sender: user, message: trimmedMessage } // ✅ Ensure message is trimmed
-        ]);
-    
-        setMessage(""); // ✅ Clear input after sending
-    };
-    
+            users: Array.from(selectedUserId)
+        }).then(res => {
+            console.log(res.data)
+            setIsModalOpen(false)
 
-    function WriteAiMessage({ message }) {
-        if (!message) return null; // Prevents rendering if message is missing
-    
-        let messageText;
-    
-        try {
-            // Try parsing the message as JSON if it's a string
-            messageText = typeof message === "string" ? JSON.parse(message)?.text : message.text;
-        } catch {
-            messageText = message; // If parsing fails, use raw text
-        }
-    
-        if (!messageText) {
-            return <div className="text-red-500">Error: Missing AI message content</div>;
-        }
-    
+        }).catch(err => {
+            console.log(err)
+        })
+
+    }
+
+    const send = () => {
+
+        sendMessage('project-message', {
+            message,
+            sender: user
+        })
+        setMessages(prevMessages => [ ...prevMessages, { sender: user, message } ]) // Update messages state
+        setMessage("")
+
+    }
+
+    function WriteAiMessage(message) {
+
+        const messageObject = JSON.parse(message)
+
         return (
-            <div className="overflow-auto bg-slate-950 text-white rounded-sm p-2">
+            <div
+                className='overflow-auto bg-slate-950 text-white rounded-sm p-2'
+            >
                 <Markdown
+                    children={messageObject.text}
                     options={{
                         overrides: {
                             code: SyntaxHighlightedCode,
                         },
                     }}
-                >
-                    {messageText}
-                </Markdown>
-            </div>
-        );
+                />
+            </div>)
     }
-    
-    
-    
+
     useEffect(() => {
-        let isMounted = true; // ✅ Prevents state updates if component unmounts
-    
-        if (!project?._id) return; // ✅ Ensures project ID exists
-    
         initializeSocket(project._id);
     
-        const isValidJson = (str) => {
-            try {
-                JSON.parse(str);
-                return true;
-            } catch (error) {
-                return false;
-            }
-        };
+        if (!webContainer) {
+            getWebContainer().then(container => {
+                setWebContainer(container);
+                console.log("container started");
+            });
+        }
     
-        const handleMessage = async (data) => {
-            console.log("Received Message:", data);
+        receiveMessage('project-message', data => {
+            console.log(data);
     
-            if (data.sender._id === 'ai') {
-                let message;
+            if (data.sender._id == 'ai') {
+                const message = JSON.parse(data.message);
+                console.log("New fileTree from AI:", message.fileTree);
     
-                if (!isValidJson(data.message)) {
-                    console.error("Invalid JSON received from AI:", data.message);
-                    return;
-                }
+                webContainer?.mount(message.fileTree);
     
-                message = JSON.parse(data.message);
-                console.log("Parsed AI Message:", message);
+                setFileTree(prevFileTree => {
+                    const updatedFileTree = { ...prevFileTree, ...message.fileTree };
+                    saveFileTree(updatedFileTree); // Save the merged file tree
+                    return updatedFileTree;
+                });
     
-                if (message.fileTree) {
-                    const sanitizedFileTree = Object.keys(message.fileTree).reduce((acc, filePath) => {
-                        let sanitizedPath = filePath.replace(/^\/+/, ""); // ✅ Remove leading "/"
-                        acc[sanitizedPath] = message.fileTree[filePath];
-                        return acc;
-                    }, {});
-    
-                    console.log("Sanitized File Tree:", sanitizedFileTree);
-    
-                    try {
-                        if (!webContainer) {
-                            console.warn("WebContainer not initialized, initializing...");
-                            const newContainer = await getWebContainer();
-    
-                            if (!newContainer) {
-                                console.error("Failed to initialize WebContainer.");
-                                return;
-                            }
-    
-                            await newContainer.mount(sanitizedFileTree); // ✅ Ensure mounting completes
-                            setWebContainer(newContainer); // ✅ Store WebContainer instance
-    
-                        } else {
-                            console.log("WebContainer already initialized, mounting files...");
-                            await webContainer.mount(sanitizedFileTree);
-                        }
-    
-                        if (isMounted) {
-                            setFileTree((prevFileTree) => ({
-                                ...prevFileTree,
-                                ...sanitizedFileTree,
-                            }));
-                        }
-    
-                    } catch (error) {
-                        console.error("Error initializing/mounting WebContainer:", error);
-                    }
-                }
-    
-                if (message.text) {
-                    setMessages((prevMessages) => [
-                        ...prevMessages,
-                        { sender: { _id: 'ai', name: 'AI' }, message: message.text },
-                    ]);
-                }
+                setMessages(prevMessages => [...prevMessages, data]);
             } else {
-                setMessages((prevMessages) => [...prevMessages, data]);
+                setMessages(prevMessages => [...prevMessages, data]);
             }
-        };
+        });
     
-        receiveMessage('project-message', handleMessage);
+        axios.get(`/projects/get-project/${location.state.project._id}`).then(res => {
+            console.log(res.data.project);
+            setProject(res.data.project);
+            setFileTree(res.data.project.fileTree || {});
+        });
     
-        axios.get(`/projects/get-project/${project._id}`)
-            .then((res) => {
-                if (isMounted) {
-                    setProject(res.data.project);
-                    setFileTree(res.data.project.fileTree || {});
-                }
-            })
-            .catch((err) => console.error("Error fetching project:", err));
+        axios.get('/users/all').then(res => {
+            setUsers(res.data.users);
+        }).catch(err => {
+            console.log(err);
+        });
+    }, []);
     
-        axios.get('/users/all')
-            .then((res) => {
-                if (isMounted) setUsers(res.data.users);
-            })
-            .catch((err) => console.error("Error fetching users:", err));
+    function saveFileTree(ft) {
+        axios.put('/projects/update-file-tree', {
+            projectId: project._id,
+            fileTree: ft
+        }).then(res => {
+            console.log("Backend response:", res.data);
+        }).catch(err => {
+            console.log("Error updating fileTree:", err);
+        });
     
-        return () => {
-            isMounted = false; // ✅ Prevents state updates if unmounted
-        };
-    }, [project._id]); // ✅ Removed `webContainer` from dependencies to avoid re-renders
-    
-    
+    }
+
+
+    // Removed appendIncomingMessage and appendOutgoingMessage functions
+
+    function scrollToBottom() {
+        messageBox.current.scrollTop = messageBox.current.scrollHeight
+    }
 
     return (
         <main className='h-screen w-screen flex'>
@@ -267,15 +193,16 @@ const Project = () => {
                     <div
                         ref={messageBox}
                         className="message-box p-1 flex-grow flex flex-col gap-1 overflow-auto max-h-full scrollbar-hide">
-                       {messages.map((msg, index) => (
-    <div key={index} className={`${msg.sender._id === 'ai' ? 'max-w-80' : 'max-w-52'} ${msg.sender._id == user._id.toString() && 'ml-auto'}  message flex flex-col p-2 bg-slate-50 w-fit rounded-md`}>
-        <small className='opacity-65 text-xs'>{msg.sender.email || 'AI Assistant'}</small>
-        <div className='text-sm'>
-            {msg.sender._id === 'ai' ? <WriteAiMessage message={msg.message} /> : <p>{msg.message}</p>}
-        </div>
-    </div>
-))}
-
+                        {messages.map((msg, index) => (
+                            <div key={index} className={`${msg.sender._id === 'ai' ? 'max-w-80' : 'max-w-52'} ${msg.sender._id == user._id.toString() && 'ml-auto'}  message flex flex-col p-2 bg-slate-50 w-fit rounded-md`}>
+                                <small className='opacity-65 text-xs'>{msg.sender.email}</small>
+                                <div className='text-sm'>
+                                    {msg.sender._id === 'ai' ?
+                                        WriteAiMessage(msg.message)
+                                        : <p>{msg.message}</p>}
+                                </div>
+                            </div>
+                        ))}
                     </div>
 
                     <div className="inputField w-full flex absolute bottom-0">
@@ -300,21 +227,21 @@ const Project = () => {
                         </button>
                     </header>
                     <div className="users flex flex-col gap-2">
-    {project?.users?.map((user, index) => (
-        <div 
-            key={user._id || user.email || index}  // Ensures a unique key
-            className="user cursor-pointer hover:bg-slate-200 p-2 flex gap-2 items-center"
-        >
-            <div className="aspect-square rounded-full w-10 h-10 flex items-center justify-center text-white bg-slate-600">
-                <i className="ri-user-fill"></i>
-            </div>
-            <h1 className="font-semibold text-lg">{user.email}</h1>
-        </div>
-    ))}
-</div>
+
+                        {project.users && project.users.map(user => {
 
 
+                           
+                                <div className="user cursor-pointer hover:bg-slate-200 p-2 flex gap-2 items-center">
+                                    <div className='aspect-square rounded-full w-fit h-fit flex items-center justify-center p-5 text-white bg-slate-600'>
+                                        <i className="ri-user-fill absolute"></i>
+                                    </div>
+                                    <h1 className='font-semibold text-lg'>{user.email}</h1>
+                                </div>
+                            
 
+                        })}
+                    </div>
                 </div>
             </section>
 
@@ -467,18 +394,14 @@ const Project = () => {
                             </button>
                         </header>
                         <div className="users-list flex flex-col gap-2 mb-16 max-h-96 overflow-auto">
-                          {users.map(user => (
-    <div key={user._id} 
-        className={`user cursor-pointer hover:bg-slate-200 ${selectedUserId.has(user._id) ? 'bg-slate-200' : ""} p-2 flex gap-2 items-center`} 
-        onClick={() => handleUserClick(user._id)}>
-        
-        <div className='aspect-square relative rounded-full w-fit h-fit flex items-center justify-center p-5 text-white bg-slate-600'>
-            <i className="ri-user-fill absolute"></i>
-        </div>
-        <h1 className='font-semibold text-lg'>{user.email}</h1>
-    </div>
-))}
-
+                            {users.map(user => (
+                                <div key={user.id} className={`user cursor-pointer hover:bg-slate-200 ${Array.from(selectedUserId).indexOf(user._id) != -1 ? 'bg-slate-200' : ""} p-2 flex gap-2 items-center`} onClick={() => handleUserClick(user._id)}>
+                                    <div className='aspect-square relative rounded-full w-fit h-fit flex items-center justify-center p-5 text-white bg-slate-600'>
+                                        <i className="ri-user-fill absolute"></i>
+                                    </div>
+                                    <h1 className='font-semibold text-lg'>{user.email}</h1>
+                                </div>
+                            ))}
                         </div>
                         <button
                             onClick={addCollaborators}
