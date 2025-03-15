@@ -2,106 +2,96 @@
 /* eslint-disable react/no-children-prop */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect, useContext, useRef } from 'react'
-import { UserContext } from '../context/user.context'
-import { useNavigate, useLocation } from 'react-router-dom'
-import axios from '../config/axios'
-import { initializeSocket, receiveMessage, sendMessage } from '../config/socket'
-import Markdown from 'markdown-to-jsx'
+import React, { useState, useEffect, useContext, useRef } from 'react';
+import { UserContext } from '../context/user.context';
+import { useNavigate, useLocation } from 'react-router-dom';
+import axios from '../config/axios';
+import { initializeSocket, receiveMessage, sendMessage } from '../config/socket';
+import Markdown from 'markdown-to-jsx';
 import hljs from 'highlight.js';
-import { getWebContainer } from '../config/webcontainer'
+import 'highlight.js/styles/default.css'; // Import highlight.js styles
+import { getWebContainer } from '../config/webcontainer';
 
+// Initialize hljs on the window object
+window.hljs = hljs;
 
 function SyntaxHighlightedCode(props) {
-    const ref = useRef(null)
+    const ref = useRef(null);
 
     React.useEffect(() => {
         if (ref.current && props.className?.includes('lang-') && window.hljs) {
-            window.hljs.highlightElement(ref.current)
-
-            // hljs won't reprocess the element unless this attribute is removed
-            ref.current.removeAttribute('data-highlighted')
+            window.hljs.highlightElement(ref.current);
+            ref.current.removeAttribute('data-highlighted');
         }
-    }, [ props.className, props.children ])
+    }, [props.className, props.children]);
 
-    return <code {...props} ref={ref} />
+    return <code {...props} ref={ref} />;
 }
 
-
 const Project = () => {
+    const location = useLocation();
 
-    const location = useLocation()
+    const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedUserId, setSelectedUserId] = useState(new Set()); // Initialized as Set
+    const [project, setProject] = useState(location.state.project);
+    const [message, setMessage] = useState('');
+    const { user } = useContext(UserContext);
+    const messageBox = useRef(null);
 
-    const [ isSidePanelOpen, setIsSidePanelOpen ] = useState(false)
-    const [ isModalOpen, setIsModalOpen ] = useState(false)
-    const [ selectedUserId, setSelectedUserId ] = useState(new Set()) // Initialized as Set
-    const [ project, setProject ] = useState(location.state.project)
-    const [ message, setMessage ] = useState('')
-    const { user } = useContext(UserContext)
-    const messageBox = React.createRef()
+    const [users, setUsers] = useState([]);
+    const [messages, setMessages] = useState([]); // New state variable for messages
+    const [fileTree, setFileTree] = useState({});
 
-    const [ users, setUsers ] = useState([])
-    const [ messages, setMessages ] = useState([]) // New state variable for messages
-    const [ fileTree, setFileTree ] = useState({})
+    const [currentFile, setCurrentFile] = useState(null);
+    const [openFiles, setOpenFiles] = useState([]);
 
-    const [ currentFile, setCurrentFile ] = useState(null)
-    const [ openFiles, setOpenFiles ] = useState([])
+    const [webContainer, setWebContainer] = useState(null);
+    const [iframeUrl, setIframeUrl] = useState(null);
 
-    const [ webContainer, setWebContainer ] = useState(null)
-    const [ iframeUrl, setIframeUrl ] = useState(null)
-
-    const [ runProcess, setRunProcess ] = useState(null)
+    const [runProcess, setRunProcess] = useState(null);
 
     const handleUserClick = (id) => {
-        setSelectedUserId(prevSelectedUserId => {
+        setSelectedUserId((prevSelectedUserId) => {
             const newSelectedUserId = new Set(prevSelectedUserId);
             if (newSelectedUserId.has(id)) {
                 newSelectedUserId.delete(id);
             } else {
                 newSelectedUserId.add(id);
             }
-
             return newSelectedUserId;
         });
-
-
-    }
-
+    };
 
     function addCollaborators() {
-
-        axios.put("/projects/add-user", {
-            projectId: location.state.project._id,
-            users: Array.from(selectedUserId)
-        }).then(res => {
-            console.log(res.data)
-            setIsModalOpen(false)
-
-        }).catch(err => {
-            console.log(err)
-        })
-
+        axios
+            .put('/projects/add-user', {
+                projectId: location.state.project._id,
+                users: Array.from(selectedUserId),
+            })
+            .then((res) => {
+                console.log(res.data);
+                setIsModalOpen(false);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
 
     const send = () => {
-
         sendMessage('project-message', {
             message,
-            sender: user
-        })
-        setMessages(prevMessages => [ ...prevMessages, { sender: user, message } ]) // Update messages state
-        setMessage("")
-
-    }
+            sender: user,
+        });
+        setMessages((prevMessages) => [...prevMessages, { sender: user, message }]); // Update messages state
+        setMessage('');
+    };
 
     function WriteAiMessage(message) {
-
-        const messageObject = JSON.parse(message)
+        const messageObject = JSON.parse(message);
 
         return (
-            <div
-                className='overflow-auto bg-slate-950 text-white rounded-sm p-2'
-            >
+            <div className="overflow-auto bg-slate-950 text-white rounded-sm p-2">
                 <Markdown
                     children={messageObject.text}
                     options={{
@@ -110,70 +100,73 @@ const Project = () => {
                         },
                     }}
                 />
-            </div>)
+            </div>
+        );
     }
 
     useEffect(() => {
         initializeSocket(project._id);
-    
+
         if (!webContainer) {
-            getWebContainer().then(container => {
+            getWebContainer().then((container) => {
                 setWebContainer(container);
-                console.log("container started");
+                console.log('container started');
             });
         }
-    
-        receiveMessage('project-message', data => {
+
+        receiveMessage('project-message', (data) => {
             console.log(data);
-    
+
             if (data.sender._id == 'ai') {
                 const message = JSON.parse(data.message);
-                console.log("New fileTree from AI:", message.fileTree);
-    
+                console.log('New fileTree from AI:', message.fileTree);
+
                 webContainer?.mount(message.fileTree);
-    
-                setFileTree(prevFileTree => {
+
+                setFileTree((prevFileTree) => {
                     const updatedFileTree = { ...prevFileTree, ...message.fileTree };
                     saveFileTree(updatedFileTree); // Save the merged file tree
                     return updatedFileTree;
                 });
-    
-                setMessages(prevMessages => [...prevMessages, data]);
+
+                setMessages((prevMessages) => [...prevMessages, data]);
             } else {
-                setMessages(prevMessages => [...prevMessages, data]);
+                setMessages((prevMessages) => [...prevMessages, data]);
             }
         });
-    
-        axios.get(`/projects/get-project/${location.state.project._id}`).then(res => {
+
+        axios.get(`/projects/get-project/${location.state.project._id}`).then((res) => {
             console.log(res.data.project);
             setProject(res.data.project);
             setFileTree(res.data.project.fileTree || {});
         });
-    
-        axios.get('/users/all').then(res => {
-            setUsers(res.data.users);
-        }).catch(err => {
-            console.log(err);
-        });
+
+        axios
+            .get('/users/all')
+            .then((res) => {
+                setUsers(res.data.users);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }, []);
-    
+
     function saveFileTree(ft) {
-        axios.put('/projects/update-file-tree', {
-            projectId: project._id,
-            fileTree: ft
-        }).then(res => {
-            console.log("Backend response:", res.data);
-        }).catch(err => {
-            console.log("Error updating fileTree:", err);
-        });
-    
+        axios
+            .put('/projects/update-file-tree', {
+                projectId: project._id,
+                fileTree: ft,
+            })
+            .then((res) => {
+                console.log('Backend response:', res.data);
+            })
+            .catch((err) => {
+                console.log('Error updating fileTree:', err);
+            });
     }
 
-
-    // Removed appendIncomingMessage and appendOutgoingMessage functions
-
     function scrollToBottom() {
-        messageBox.current.scrollTop = messageBox.current.scrollHeight
+        messageBox.current.scrollTop = messageBox.current.scrollHeight;
     }
 
     return (
