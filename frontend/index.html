@@ -2,9 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <!-- Preload the worker script with the correct `as` attribute -->
-  <link rel="preload" href="https://w-corp-staticblitz.com/fetch.worker.853a9fbb.js" as="worker">
-
+  
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vite + React</title>
@@ -24,10 +22,5 @@
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
-
-  <!-- Load the worker script dynamically -->
-  <script>
-    const worker = new Worker('https://w-corp-staticblitz.com/fetch.worker.853a9fbb.js');
-  </script>
 </body>
 </html>
