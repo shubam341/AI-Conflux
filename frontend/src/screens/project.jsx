@@ -174,13 +174,13 @@ const Project = () => {
 
 
     return (
-        <main className="h-screen w-screen flex bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden">
+        <main className="h-screen w-screen flex bg-gradient-to-br from-slate-100 to-slate-300 overflow-hidden">
             {/* Left Section - Chat Area */}
             <section className="left relative flex flex-col h-screen min-w-96 bg-gradient-to-b from-slate-200 to-slate-300 shadow-lg">
                 {/* Header */}
                 <header className="flex justify-between items-center p-4 w-full bg-slate-100 shadow-sm absolute z-10 top-0">
                     <button 
-                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200"
+                        className="flex cursor-pointer items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200"
                         onClick={() => setIsModalOpen(true)}
                     >
                         <i className="ri-add-fill"></i>
@@ -188,7 +188,8 @@ const Project = () => {
                     </button>
                     <button 
                         onClick={() => setIsSidePanelOpen(!isSidePanelOpen)} 
-                        className="p-2 bg-slate-200 rounded-lg hover:bg-slate-300 transition duration-200"
+                    
+                        className="p-2 bg-slate-200  cursor-pointer rounded-lg hover:bg-emerald-300 transition duration-200"
                     >
                         <i className="ri-group-fill text-lg"></i>
                     </button>
@@ -204,7 +205,7 @@ const Project = () => {
                         {messages.map((msg, index) => (
                             <div 
                                 key={index} 
-                                className={`${msg.sender._id === 'ai' ? 'max-w-80' : 'max-w-52'} ${msg.sender._id === user._id.toString() ? 'ml-auto bg-blue-100' : 'bg-blue-50'} message flex flex-col p-4 w-fit rounded-lg shadow-sm`}
+                                className={`${msg.sender._id === 'ai' ? 'max-w-80' : 'max-w-52'} ${msg.sender._id === user._id.toString() ? 'ml-auto bg-blue-500' : 'bg-blue-50'} message flex flex-col p-4 w-fit rounded-lg shadow-sm`}
                             >
                                 <small className="opacity-65 text-xs mb-1">{msg.sender.email}</small>
                                 <div className="text-sm">
@@ -239,7 +240,7 @@ const Project = () => {
     
                 {/* Side Panel */}
                 <div 
-                    className={`sidePanel w-full h-full flex flex-col gap-2 bg-white absolute transition-all ${isSidePanelOpen ? 'translate-x-0' : '-translate-x-full'} top-0 shadow-lg`}
+                    className={`sidePanel w-full h-full flex flex-col gap-2 bg-slate-200 absolute transition-all ${isSidePanelOpen ? 'translate-x-0' : '-translate-x-full'} top-0 shadow-lg`}
                 >
                     {/* Side Panel Header */}
                     <header className="flex justify-between items-center px-4 p-3 bg-slate-100 border-b border-slate-200">
@@ -324,7 +325,7 @@ const Project = () => {
                                 onClick={() => {
                                     navigator.clipboard.writeText(fileTree[currentFile].file.contents);
                                 }}
-                                className="p-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200"
+                                className="p-2 px-4 cursor-pointer bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200"
                             >
                                 <i className="ri-file-copy-line"></i>
                             </button>
@@ -352,7 +353,7 @@ const Project = () => {
                                         setIframeUrl(url);
                                     });
                                 }}
-                                className="p-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200"
+                                className="p-2 px-4 bg-blue-600 cursor-pointer text-white rounded-lg hover:bg-blue-700 transition duration-200"
                             >
                                 Run
                             </button>
@@ -412,13 +413,13 @@ const Project = () => {
     
             {/* Add Collaborator Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-transparent">
-                    <div className="bg-white p-6 rounded-lg w-96 max-w-full relative shadow-xl">
+                <div className="fixed inset-0 flex items-center justify-center bg-black/50 cursor-pointer hover:shadow-eme">
+                <div className="bg-white p-6 rounded-lg w-96 max-w-full relative shadow-xl">
                         <header className="flex justify-between items-center mb-4">
                             <h2 className="text-xl font-semibold">Select User</h2>
                             <button 
                                 onClick={() => setIsModalOpen(false)} 
-                                className="p-2 bg-slate-200 rounded-lg hover:bg-slate-300 transition duration-200"
+                                className="p-2 cursor-pointer bg-slate-200 rounded-lg hover:bg-slate-300 transition duration-200"
                             >
                                 <i className="ri-close-fill"></i>
                             </button>
@@ -432,7 +433,7 @@ const Project = () => {
                                         className={`user cursor-pointer hover:bg-slate-200 ${Array.from(selectedUserId).includes(user._id) ? 'bg-slate-200' : ""} p-2 flex gap-2 items-center rounded-lg transition duration-200`} 
                                         onClick={() => handleUserClick(user._id)}
                                     >
-                                        <div className="aspect-square relative rounded-full w-10 h-10 flex items-center justify-center bg-blue-600 text-white">
+                                        <div className="aspect-square relative  rounded-full w-10 h-10 flex items-center justify-center bg-blue-600 text-white">
                                             <i className="ri-user-fill"></i>
                                         </div>
                                         <h1 className="font-semibold text-lg">{user.email}</h1>
@@ -441,7 +442,7 @@ const Project = () => {
                         </div>
                         <button
                             onClick={addCollaborators}
-                            className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200"
+                            className="absolute bottom-4 left-1/2  cursor-pointer transform -translate-x-1/2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200"
                         >
                             Add Collaborators
                         </button>

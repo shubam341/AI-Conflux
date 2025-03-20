@@ -82,7 +82,7 @@ const Home = () => {
                 <section className="mb-10 p-8 bg-slate-50 rounded-2xl border border-slate-200 
                     shadow-lg hover:shadow-xl transition-all duration-500 hover:bg-gradient-to-br hover:from-slate-50 hover:to-emerald-50/30">
                     <h2 className="text-3xl font-bold text-slate-800 mb-6 group-hover:text-emerald-700">
-                        Create Project
+                        Create a New Project
                     </h2>
                     <div className="flex flex-col gap-4">
                         <button 
