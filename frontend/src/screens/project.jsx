@@ -225,13 +225,13 @@ const Project = () => {
                                     send();
                                 }
                             }}
-                            className="p-2 px-4 border-none outline-none flex-grow rounded-lg bg-slate-100 focus:ring-2 focus:ring-blue-500"
+                            className="p-2 px-4 border-none outline-none flex-grow rounded-lg bg-slate-100 focus:ring-2 focus:ring-blue-500 transition duration-200 focus:bg-white"
                             type="text" 
                             placeholder="Enter message" 
                         />
                         <button
                             onClick={send}
-                            className="px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200"
+                            className="ml-4 px-6 py-2 cursor-pointer bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:shadow-lg transition duration-200 transform hover:scale-105 active:scale-95"
                         >
                             <i className="ri-send-plane-fill"></i>
                         </button>
