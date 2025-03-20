@@ -174,7 +174,7 @@ const Project = () => {
 
 
     return (
-        <main className="h-screen w-screen flex bg-gradient-to-br from-slate-100 to-slate-200">
+        <main className="h-screen w-screen flex bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden">
             {/* Left Section - Chat Area */}
             <section className="left relative flex flex-col h-screen min-w-96 bg-gradient-to-b from-slate-200 to-slate-300 shadow-lg">
                 {/* Header */}
@@ -279,8 +279,7 @@ const Project = () => {
                                 key={index}
                                 onClick={() => {
                                     setCurrentFile(file);
-                                    setOpenFiles([...new Set([...openFiles, file])]);
-                                }}
+                                    setOpenFiles([...new Set([...openFiles, file])]);                                }}
                                 className="tree-element cursor-pointer p-2 px-4 flex items-center gap-2 bg-slate-300 w-full hover:bg-slate-400 transition duration-200 rounded-lg"
                             >
                                 <i className="ri-file-text-line text-blue-600"></i>
@@ -294,8 +293,8 @@ const Project = () => {
                 <div className="code-editor flex flex-col flex-grow h-full shrink bg-white shadow-lg">
                     {/* Top Bar - Open Files and Actions */}
                     <div className="top flex justify-between w-full p-2 bg-slate-100 border-b border-slate-200">
-                        {/* Scrollable Open Files Section */}
-                        <div className="files flex gap-2 overflow-x-auto scrollbar-hide">
+                        {/* Open Files Section (No Scroll) */}
+                        <div className="files flex gap-2">
                             {openFiles.map((file, index) => (
                                 <div key={index} className="flex items-center gap-2">
                                     <button
@@ -319,6 +318,7 @@ const Project = () => {
                                 </div>
                             ))}
                         </div>
+                        {/* Static Copy and Run Buttons */}
                         <div className="actions flex gap-2">
                             <button
                                 onClick={() => {
