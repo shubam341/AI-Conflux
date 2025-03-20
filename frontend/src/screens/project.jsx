@@ -171,7 +171,6 @@ const Project = () => {
             messageBox.current.scrollTop = messageBox.current.scrollHeight;
         }
     }, [messages]);
-
     return (
         <main className="h-screen w-screen flex bg-gradient-to-br from-slate-100 to-slate-200">
             {/* Left Section - Chat Area */}
@@ -203,7 +202,7 @@ const Project = () => {
                         {messages.map((msg, index) => (
                             <div 
                                 key={index} 
-                                className={`${msg.sender._id === 'ai' ? 'max-w-80' : 'max-w-52'} ${msg.sender._id === user._id.toString() ? 'ml-auto' : ''} message flex flex-col p-4 w-fit rounded-lg shadow-sm ${msg.sender._id === user._id.toString() ? 'bg-blue-100' : 'bg-slate-100'}`}
+                                className={`${msg.sender._id === 'ai' ? 'max-w-80' : 'max-w-52'} ${msg.sender._id === user._id.toString() ? 'ml-auto bg-blue-100' : 'bg-blue-50'} message flex flex-col p-4 w-fit rounded-lg shadow-sm`}
                             >
                                 <small className="opacity-65 text-xs mb-1">{msg.sender.email}</small>
                                 <div className="text-sm">
@@ -218,6 +217,11 @@ const Project = () => {
                         <input
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    send();
+                                }
+                            }}
                             className="p-2 px-4 border-none outline-none flex-grow rounded-lg bg-slate-100 focus:ring-2 focus:ring-blue-500"
                             type="text" 
                             placeholder="Enter message" 
@@ -273,7 +277,7 @@ const Project = () => {
                                 key={index}
                                 onClick={() => {
                                     setCurrentFile(file);
-                                    setOpenFiles([...new Set([...openFiles, file])];
+                                    setOpenFiles([...new Set([...openFiles, file])]);
                                 }}
                                 className="tree-element cursor-pointer p-2 px-4 flex items-center gap-2 bg-slate-300 w-full hover:bg-slate-400 transition duration-200 rounded-lg"
                             >
@@ -290,14 +294,26 @@ const Project = () => {
                     <div className="top flex justify-between w-full p-2 bg-slate-100 border-b border-slate-200">
                         <div className="files flex">
                             {openFiles.map((file, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => setCurrentFile(file)}
-                                    className={`open-file cursor-pointer p-2 px-4 flex items-center w-fit gap-2 bg-slate-300 hover:bg-slate-400 transition duration-200 rounded-lg ${currentFile === file ? 'bg-slate-400' : ''}`}
-                                >
-                                    <i className="ri-file-text-line text-blue-600"></i>
-                                    <p className="font-semibold text-lg">{file}</p>
-                                </button>
+                                <div key={index} className="flex items-center gap-2">
+                                    <button
+                                        onClick={() => setCurrentFile(file)}
+                                        className={`open-file cursor-pointer p-2 px-4 flex items-center w-fit gap-2 bg-slate-300 hover:bg-slate-400 transition duration-200 rounded-lg ${currentFile === file ? 'bg-slate-400' : ''}`}
+                                    >
+                                        <i className="ri-file-text-line text-blue-600"></i>
+                                        <p className="font-semibold text-lg">{file}</p>
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setOpenFiles(openFiles.filter((f) => f !== file));
+                                            if (currentFile === file) {
+                                                setCurrentFile(null);
+                                            }
+                                        }}
+                                        className="p-2 text-red-600 hover:text-red-700 transition duration-200"
+                                    >
+                                        <i className="ri-close-line"></i>
+                                    </button>
+                                </div>
                             ))}
                         </div>
                         <div className="actions flex gap-2">
@@ -362,6 +378,14 @@ const Project = () => {
                                         }}
                                     />
                                 </pre>
+                                <button
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(fileTree[currentFile].file.contents);
+                                    }}
+                                    className="absolute top-2 right-2 p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200"
+                                >
+                                    <i className="ri-file-copy-line"></i>
+                                </button>
                             </div>
                         )}
                     </div>
@@ -396,19 +420,21 @@ const Project = () => {
                                 <i className="ri-close-fill"></i>
                             </button>
                         </header>
-                        <div className="users-list flex flex-col gap-2 mb-16 max-h-96 overflow-auto">
-                            {users.map(user => (
-                                <div 
-                                    key={user.id} 
-                                    className={`user cursor-pointer hover:bg-slate-200 ${Array.from(selectedUserId).includes(user._id) ? 'bg-slate-200' : ""} p-2 flex gap-2 items-center rounded-lg transition duration-200`} 
-                                    onClick={() => handleUserClick(user._id)}
-                                >
-                                    <div className="aspect-square relative rounded-full w-10 h-10 flex items-center justify-center bg-blue-600 text-white">
-                                        <i className="ri-user-fill"></i>
+                        <div className="users-list flex flex-col gap-2 mb-16 max-h-96 overflow-y-auto scrollbar-hide">
+                            {users
+                                .filter((user) => !project.users.some((u) => u._id === user._id)) // Filter out users already in the project
+                                .map((user) => (
+                                    <div 
+                                        key={user.id} 
+                                        className={`user cursor-pointer hover:bg-slate-200 ${Array.from(selectedUserId).includes(user._id) ? 'bg-slate-200' : ""} p-2 flex gap-2 items-center rounded-lg transition duration-200`} 
+                                        onClick={() => handleUserClick(user._id)}
+                                    >
+                                        <div className="aspect-square relative rounded-full w-10 h-10 flex items-center justify-center bg-blue-600 text-white">
+                                            <i className="ri-user-fill"></i>
+                                        </div>
+                                        <h1 className="font-semibold text-lg">{user.email}</h1>
                                     </div>
-                                    <h1 className="font-semibold text-lg">{user.email}</h1>
-                                </div>
-                            ))}
+                                ))}
                         </div>
                         <button
                             onClick={addCollaborators}
@@ -421,5 +447,5 @@ const Project = () => {
             )}
         </main>
     );
-
+}
 export default Project;
