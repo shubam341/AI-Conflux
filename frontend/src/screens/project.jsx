@@ -170,263 +170,242 @@ const Project = () => {
     }
 
     return (
-        <main className="h-screen w-screen flex bg-gradient-to-br from-slate-100 to-slate-200">
-            {/* Left Section - Chat Area */}
-            <section className="left relative flex flex-col h-screen min-w-96 bg-gradient-to-b from-slate-200 to-slate-300 shadow-lg">
-                {/* Header */}
-                <header className="flex justify-between items-center p-4 w-full bg-slate-100 shadow-sm absolute z-10 top-0">
-                    <button 
-                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200"
-                        onClick={() => setIsModalOpen(true)}
-                    >
-                        <i className="ri-add-fill"></i>
-                        <p>Add Collaborator</p>
+        <main className='h-screen w-screen flex'>
+            <section className="left relative flex flex-col h-screen min-w-96 bg-slate-300">
+                <header className='flex justify-between items-center p-2 px-4 w-full bg-slate-100 absolute z-10 top-0'>
+                    <button className='flex gap-2' onClick={() => setIsModalOpen(true)}>
+                        <i className="ri-add-fill mr-1"></i>
+                        <p>Add collaborator</p>
                     </button>
-                    <button 
-                        onClick={() => setIsSidePanelOpen(!isSidePanelOpen)} 
-                        className="p-2 bg-slate-200 rounded-lg hover:bg-slate-300 transition duration-200"
-                    >
-                        <i className="ri-group-fill text-lg"></i>
+                    <button onClick={() => setIsSidePanelOpen(!isSidePanelOpen)} className='p-2'>
+                        <i className="ri-group-fill"></i>
                     </button>
                 </header>
-    
-                {/* Conversation Area */}
-                <div className="conversation-area pt-16 pb-12 flex-grow flex flex-col h-full relative">
-                    {/* Message Box */}
+                <div className="conversation-area pt-14 pb-10 flex-grow flex flex-col h-full relative">
+
                     <div
                         ref={messageBox}
-                        className="message-box p-2 flex-grow flex flex-col gap-2 overflow-auto max-h-full scrollbar-hide"
-                    >
+                        className="message-box p-1 flex-grow flex flex-col gap-1 overflow-auto max-h-full scrollbar-hide">
                         {messages.map((msg, index) => (
-                            <div 
-                                key={index} 
-                                className={`${msg.sender._id === 'ai' ? 'max-w-80' : 'max-w-52'} ${msg.sender._id === user._id.toString() && 'ml-auto'} message flex flex-col p-3 bg-white w-fit rounded-lg shadow-sm`}
-                            >
-                                <small className="opacity-65 text-xs">{msg.sender.email}</small>
-                                <div className="text-sm">
-                                    {msg.sender._id === 'ai' ? WriteAiMessage(msg.message) : <p>{msg.message}</p>}
+                            <div key={index} className={`${msg.sender._id === 'ai' ? 'max-w-80' : 'max-w-52'} ${msg.sender._id == user._id.toString() && 'ml-auto'}  message flex flex-col p-2 bg-slate-50 w-fit rounded-md`}>
+                                <small className='opacity-65 text-xs'>{msg.sender.email}</small>
+                                <div className='text-sm'>
+                                    {msg.sender._id === 'ai' ?
+                                        WriteAiMessage(msg.message)
+                                        : <p>{msg.message}</p>}
                                 </div>
                             </div>
                         ))}
                     </div>
-    
-                    {/* Input Field */}
-                    <div className="inputField w-full flex absolute bottom-0 bg-white p-2 border-t border-slate-200">
+
+                    <div className="inputField w-full flex absolute bottom-0">
                         <input
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
-                            className="p-2 px-4 border-none outline-none flex-grow rounded-lg bg-slate-100 focus:ring-2 focus:ring-blue-500"
-                            type="text" 
-                            placeholder="Enter message" 
-                        />
+                            className='p-2 px-4 border-none outline-none flex-grow' type="text" placeholder='Enter message' />
                         <button
                             onClick={send}
-                            className="px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200"
-                        >
-                            <i className="ri-send-plane-fill"></i>
-                        </button>
+                            className='px-5 bg-slate-950 text-white'><i className="ri-send-plane-fill"></i></button>
                     </div>
                 </div>
-    
-                {/* Side Panel */}
-                <div 
-                    className={`sidePanel w-full h-full flex flex-col gap-2 bg-white absolute transition-all ${isSidePanelOpen ? 'translate-x-0' : '-translate-x-full'} top-0 shadow-lg`}
-                >
-                    {/* Side Panel Header */}
-                    <header className="flex justify-between items-center px-4 p-3 bg-slate-100 border-b border-slate-200">
-                        <h1 className="font-semibold text-lg">Collaborators</h1>
-                        <button 
-                            onClick={() => setIsSidePanelOpen(!isSidePanelOpen)} 
-                            className="p-2 bg-slate-200 rounded-lg hover:bg-slate-300 transition duration-200"
-                        >
-                            <i className="ri-close-fill text-lg"></i>
+                <div className={`sidePanel w-full h-full flex flex-col gap-2 bg-slate-50 absolute transition-all ${isSidePanelOpen ? 'translate-x-0' : '-translate-x-full'} top-0`}>
+                    <header className='flex justify-between items-center px-4 p-2 bg-slate-200'>
+
+                        <h1
+                            className='font-semibold text-lg'
+                        >Collaborators</h1>
+
+                        <button onClick={() => setIsSidePanelOpen(!isSidePanelOpen)} className='p-2'>
+                            <i className="ri-close-fill"></i>
                         </button>
                     </header>
-    
-                    {/* Collaborators List */}
-                    <div className="users flex flex-col gap-2 p-2">
-                        {project.users && project.users.map((user, index) => (
-                            <div 
-                                key={index} 
-                                className="user cursor-pointer hover:bg-slate-100 p-2 flex gap-3 items-center rounded-lg transition duration-200"
-                            >
-                                <div className="aspect-square rounded-full w-10 h-10 flex items-center justify-center bg-blue-600 text-white">
-                                    <i className="ri-user-fill"></i>
+                    <div className="users flex flex-col gap-2">
+
+                        {project.users && project.users.map(user => {
+
+
+                           
+                                <div className="user cursor-pointer hover:bg-slate-200 p-2 flex gap-2 items-center">
+                                    <div className='aspect-square rounded-full w-fit h-fit flex items-center justify-center p-5 text-white bg-slate-600'>
+                                        <i className="ri-user-fill absolute"></i>
+                                    </div>
+                                    <h1 className='font-semibold text-lg'>{user.email}</h1>
                                 </div>
-                                <h1 className="font-semibold text-lg">{user.email}</h1>
-                            </div>
-                        ))}
+                            
+
+                        })}
                     </div>
                 </div>
             </section>
-    
-            {/* Right Section - Code Editor */}
-            <section className="right flex-grow h-full flex bg-gradient-to-br from-slate-100 to-slate-200">
-    {/* File Explorer */}
-    <div className="explorer h-full max-w-64 min-w-52 bg-slate-200 shadow-lg">
-        <div className="file-tree w-full">
-            {Object.keys(fileTree).map((file, index) => (
-                <button
-                    key={index}
-                    onClick={() => {
-                        setCurrentFile(file);
-                        setOpenFiles([...new Set([...openFiles, file])]); // Fixed syntax issue
-                    }}
-                    className="tree-element cursor-pointer p-2 px-4 flex items-center gap-2 bg-slate-300 w-full hover:bg-slate-400 transition duration-200"
-                >
-                    <p className="font-semibold text-lg">{file}</p>
-                </button>
-            ))}
-        </div>
-    </div>
 
-    {/* Code Editor */}
-    <div className="code-editor flex flex-col flex-grow h-full shrink bg-white shadow-lg">
-        {/* Top Bar - Open Files and Actions */}
-        <div className="top flex justify-between w-full p-2 bg-slate-100 border-b border-slate-200">
-            <div className="files flex">
-                {openFiles.map((file, index) => (
-                    <button
-                        key={index}
-                        onClick={() => setCurrentFile(file)}
-                        className={`open-file cursor-pointer p-2 px-4 flex items-center w-fit gap-2 bg-slate-300 hover:bg-slate-400 transition duration-200 ${
-                            currentFile === file ? 'bg-slate-400' : ''
-                        }`}
-                    >
-                        <p className="font-semibold text-lg">{file}</p>
-                    </button>
-                ))}
-            </div>
-            <div className="actions flex gap-2">
-                <button
-                    onClick={async () => {
-                        await webContainer.mount(fileTree);
-                        const installProcess = await webContainer.spawn('npm', ['install']);
-                        installProcess.output.pipeTo(
-                            new WritableStream({
-                                write(chunk) {
-                                    console.log(chunk);
-                                },
-                            })
-                        );
-                        if (runProcess) {
-                            runProcess.kill();
+            <section className="right  bg-red-50 flex-grow h-full flex">
+
+                <div className="explorer h-full max-w-64 min-w-52 bg-slate-200">
+                    <div className="file-tree w-full">
+                        {
+                            Object.keys(fileTree).map((file, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => {
+                                        setCurrentFile(file)
+                                        setOpenFiles([ ...new Set([ ...openFiles, file ]) ])
+                                    }}
+                                    className="tree-element cursor-pointer p-2 px-4 flex items-center gap-2 bg-slate-300 w-full">
+                                    <p
+                                        className='font-semibold text-lg'
+                                    >{file}</p>
+                                </button>))
+
                         }
-                        let tempRunProcess = await webContainer.spawn('npm', ['start']);
-                        tempRunProcess.output.pipeTo(
-                            new WritableStream({
-                                write(chunk) {
-                                    console.log(chunk);
-                                },
-                            })
-                        );
-                        setRunProcess(tempRunProcess);
-                        webContainer.on('server-ready', (port, url) => {
-                            console.log(port, url);
-                            setIframeUrl(url);
-                        });
-                    }}
-                    className="p-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200"
-                >
-                    Run
-                </button>
-            </div>
-        </div>
+                    </div>
 
-        {/* Code Editor Area */}
-        <div className="bottom flex flex-grow max-w-full shrink overflow-auto">
-            {fileTree[currentFile] && (
-                <div className="code-editor-area h-full overflow-auto flex-grow bg-slate-50">
-                    <pre className="hljs h-full">
-                        <code
-                            className="hljs h-full outline-none"
-                            contentEditable
-                            suppressContentEditableWarning
-                            onBlur={(e) => {
-                                const updatedContent = e.target.innerText;
-                                const ft = {
-                                    ...fileTree,
-                                    [currentFile]: {
-                                        file: {
-                                            contents: updatedContent,
-                                        },
-                                    },
-                                };
-                                setFileTree(ft);
-                                saveFileTree(ft);
-                            }}
-                            dangerouslySetInnerHTML={{
-                                __html: hljs.highlight(
-                                    'javascript',
-                                    fileTree[currentFile].file.contents
-                                ).value,
-                            }}
-                            style={{
-                                whiteSpace: 'pre-wrap',
-                                paddingBottom: '25rem',
-                                counterSet: 'line-numbering',
-                            }}
-                        />
-                    </pre>
                 </div>
-            )}
-        </div>
-    </div>
 
-    {/* Iframe Preview */}
-    {iframeUrl && webContainer && (
-        <div className="flex min-w-96 flex-col h-full bg-white shadow-lg">
-            <div className="address-bar p-2 bg-slate-100 border-b border-slate-200">
-                <input
-                    type="text"
-                    onChange={(e) => setIframeUrl(e.target.value)}
-                    value={iframeUrl}
-                    className="w-full p-2 px-4 bg-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
-                />
-            </div>
-            <iframe src={iframeUrl} className="w-full h-full"></iframe>
-        </div>
-    )}
-</section>
 
-            {/* Add Collaborator Modal */}
+                <div className="code-editor flex flex-col flex-grow h-full shrink">
+
+                    <div className="top flex justify-between w-full">
+
+                        <div className="files flex">
+                            {
+                                openFiles.map((file, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => setCurrentFile(file)}
+                                        className={`open-file cursor-pointer p-2 px-4 flex items-center w-fit gap-2 bg-slate-300 ${currentFile === file ? 'bg-slate-400' : ''}`}>
+                                        <p
+                                            className='font-semibold text-lg'
+                                        >{file}</p>
+                                    </button>
+                                ))
+                            }
+                        </div>
+
+                        <div className="actions flex gap-2">
+                            <button
+                                onClick={async () => {
+                                    await webContainer.mount(fileTree)
+
+
+                                    const installProcess = await webContainer.spawn("npm", [ "install" ])
+
+
+
+                                    installProcess.output.pipeTo(new WritableStream({
+                                        write(chunk) {
+                                            console.log(chunk)
+                                        }
+                                    }))
+
+                                    if (runProcess) {
+                                        runProcess.kill()
+                                    }
+
+                                    let tempRunProcess = await webContainer.spawn("npm", [ "start" ]);
+
+                                    tempRunProcess.output.pipeTo(new WritableStream({
+                                        write(chunk) {
+                                            console.log(chunk)
+                                        }
+                                    }))
+
+                                    setRunProcess(tempRunProcess)
+
+                                    webContainer.on('server-ready', (port, url) => {
+                                        console.log(port, url)
+                                        setIframeUrl(url)
+                                    })
+
+                                }}
+                                className='p-2 px-4 bg-slate-300 text-white'
+                            >
+                                run
+                            </button>
+
+
+                        </div>
+                    </div>
+                    <div className="bottom flex flex-grow max-w-full shrink overflow-auto">
+                        {
+                            fileTree[ currentFile ] && (
+                                <div className="code-editor-area h-full overflow-auto flex-grow bg-slate-50">
+                                    <pre
+                                        className="hljs h-full">
+                                        <code
+                                            className="hljs h-full outline-none"
+                                            contentEditable
+                                            suppressContentEditableWarning
+                                            onBlur={(e) => {
+                                                const updatedContent = e.target.innerText;
+                                                const ft = {
+                                                    ...fileTree,
+                                                    [ currentFile ]: {
+                                                        file: {
+                                                            contents: updatedContent
+                                                        }
+                                                    }
+                                                }
+                                                setFileTree(ft)
+                                                saveFileTree(ft)
+                                            }}
+                                            dangerouslySetInnerHTML={{ __html: hljs.highlight('javascript', fileTree[ currentFile ].file.contents).value }}
+                                            style={{
+                                                whiteSpace: 'pre-wrap',
+                                                paddingBottom: '25rem',
+                                                counterSet: 'line-numbering',
+                                            }}
+                                        />
+                                    </pre>
+                                </div>
+                            )
+                        }
+                    </div>
+
+                </div>
+
+                {iframeUrl && webContainer &&
+                    (<div className="flex min-w-96 flex-col h-full">
+                        <div className="address-bar">
+                            <input type="text"
+                                onChange={(e) => setIframeUrl(e.target.value)}
+                                value={iframeUrl} className="w-full p-2 px-4 bg-slate-200" />
+                        </div>
+                        <iframe src={iframeUrl} className="w-full h-full"></iframe>
+                    </div>)
+                }
+
+
+            </section>
+
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                    <div className="bg-white p-6 rounded-lg w-96 max-w-full relative shadow-xl">
-                        <header className="flex justify-between items-center mb-4">
-                            <h2 className="text-xl font-semibold">Select User</h2>
-                            <button 
-                                onClick={() => setIsModalOpen(false)} 
-                                className="p-2 bg-slate-200 rounded-lg hover:bg-slate-300 transition duration-200"
-                            >
+                    <div className="bg-white p-4 rounded-md w-96 max-w-full relative">
+                        <header className='flex justify-between items-center mb-4'>
+                            <h2 className='text-xl font-semibold'>Select User</h2>
+                            <button onClick={() => setIsModalOpen(false)} className='p-2'>
                                 <i className="ri-close-fill"></i>
                             </button>
                         </header>
                         <div className="users-list flex flex-col gap-2 mb-16 max-h-96 overflow-auto">
                             {users.map(user => (
-                                <div 
-                                    key={user.id} 
-                                    className={`user cursor-pointer hover:bg-slate-200 ${Array.from(selectedUserId).includes(user._id) ? 'bg-slate-200' : ""} p-2 flex gap-2 items-center rounded-lg transition duration-200`} 
-                                    onClick={() => handleUserClick(user._id)}
-                                >
-                                    <div className="aspect-square relative rounded-full w-10 h-10 flex items-center justify-center bg-blue-600 text-white">
-                                        <i className="ri-user-fill"></i>
+                                <div key={user.id} className={`user cursor-pointer hover:bg-slate-200 ${Array.from(selectedUserId).indexOf(user._id) != -1 ? 'bg-slate-200' : ""} p-2 flex gap-2 items-center`} onClick={() => handleUserClick(user._id)}>
+                                    <div className='aspect-square relative rounded-full w-fit h-fit flex items-center justify-center p-5 text-white bg-slate-600'>
+                                        <i className="ri-user-fill absolute"></i>
                                     </div>
-                                    <h1 className="font-semibold text-lg">{user.email}</h1>
+                                    <h1 className='font-semibold text-lg'>{user.email}</h1>
                                 </div>
                             ))}
                         </div>
                         <button
                             onClick={addCollaborators}
-                            className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200"
-                        >
+                            className='absolute bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-blue-600 text-white rounded-md'>
                             Add Collaborators
                         </button>
                     </div>
                 </div>
             )}
         </main>
-    );
+    )
 }
 
 export default Project
