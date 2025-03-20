@@ -92,10 +92,13 @@ const Home = () => {
                             hover:translate-y-[-2px] before:absolute before:inset-0 before:bg-white/20 before:translate-x-[-100%]
                             before:hover:translate-x-[100%] before:transition-transform before:duration-[400ms]"
                         >
-                            <div className="relative flex items-center gap-3">
-                                <i className="ri-sparkle-line text-xl group-hover:rotate-180 transition-transform duration-500"></i>
-                                Initialize New Project
-                            </div>
+                           <div className="relative flex items-center gap-3 p-2 rounded-lg transition-all duration-500 group hover:bg-blue-500 hover:text-white">
+    <i className="ri-sparkle-line text-xl transition-transform duration-500 group-hover:rotate-180 group-hover:scale-110"></i>
+    <span className="transition-all duration-500 group-hover:tracking-wider">
+        Initialize New Project
+    </span>
+</div>
+
                         </button>
                         <p className="text-sm text-slate-600">
                             Start a new project to collaborate with your team and build amazing AI solutions.
