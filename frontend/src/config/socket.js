@@ -4,7 +4,7 @@ let socketInstance = null;
 
 // Initialize Socket with Authentication
 export const initializeSocket = (projectId) => {
-    if (!socketInstance) {  // Prevent re-initialization
+    if (!socketInstance) { 
         socketInstance = socket(import.meta.env.VITE_API_URL, {
             auth: {
                 token: localStorage.getItem('token')
@@ -20,7 +20,7 @@ export const initializeSocket = (projectId) => {
 // Function to receive messages
 export const receiveMessage = (eventName, cb) => {
     if (socketInstance) {
-        socketInstance.on(eventName, cb);  //  Correct: Use `.on()` to listen for events
+        socketInstance.on(eventName, cb); 
     };
 };
 

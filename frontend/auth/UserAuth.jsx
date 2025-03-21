@@ -17,8 +17,8 @@ const UserAuth = ({ children }) => {
         } else {
             setLoading(false);
         }
-    }, [token, user, navigate]); // Add dependencies
-
+    }, [token, user, navigate]); 
+    
     if (loading) {
         return <div>Loading...</div>;
     }

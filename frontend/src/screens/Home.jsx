@@ -21,9 +21,9 @@ const Home = () => {
 
     // Function to handle logout
     const handleLogout = () => {
-        localStorage.removeItem("user"); // Clear stored session
+        localStorage.removeItem("user"); 
         setUser(null);
-        navigate("/login"); // Redirect to login page
+        navigate("/login"); 
     };
 
     // Function to create project
@@ -52,7 +52,7 @@ const Home = () => {
             {/* Header */}
             <header className="bg-slate-900 fixed top-0 left-0 right-0 z-10 shadow-lg">
                 <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-                    {/* Logo and Project Name */}
+                   
                     <div className="flex items-center gap-3 group cursor-pointer">
                         <div className="relative">
                             <i className="ri-brain-line text-3xl text-emerald-400 group-hover:text-emerald-300 transition-colors duration-300"></i>
@@ -78,7 +78,7 @@ const Home = () => {
     
             {/* Main Content */}
             <div className="container mx-auto pt-28 px-6 pb-12">
-                {/* Create Project Section */}
+             
                 <section className="mb-10 p-8 bg-slate-50 rounded-2xl border border-slate-200 
                     shadow-lg hover:shadow-xl transition-all duration-500 hover:bg-gradient-to-br hover:from-slate-50 hover:to-emerald-50/30">
                     <h2 className="text-3xl font-bold text-slate-800 mb-6 group-hover:text-emerald-700">
@@ -106,14 +106,14 @@ const Home = () => {
                     </div>
                 </section>
     
-                {/* Your Projects Section */}
+          
                 <section className="p-8 bg-slate-50 rounded-2xl border border-slate-200 
                     shadow-lg hover:shadow-xl transition-all duration-500 hover:bg-gradient-to-br hover:from-slate-50 hover:to-emerald-50/30">
                     <h2 className="text-3xl font-bold text-slate-800 mb-8">
                         Your Projects
                     </h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {/* Project Cards */}
+                
                         {project.map((project) => (
                             <div 
                                 key={project._id} 

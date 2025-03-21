@@ -270,9 +270,8 @@ const Project = () => {
                 </div>
             </section>
     
-            {/* Right Section - Code Editor */}
             <section className="right flex-grow h-full flex bg-gradient-to-br from-slate-100 to-slate-200">
-                {/* File Explorer */}
+            
                 <div className="explorer h-full max-w-64 min-w-52 bg-slate-200 shadow-lg">
                     <div className="file-tree w-full p-2 space-y-2">
                         {Object.keys(fileTree).map((file, index) => (
@@ -292,9 +291,9 @@ const Project = () => {
     
                 {/* Code Editor */}
                 <div className="code-editor flex flex-col flex-grow h-full shrink bg-white shadow-lg">
-                    {/* Top Bar - Open Files and Actions */}
+                   
                     <div className="top flex justify-between w-full p-2 bg-slate-100 border-b border-slate-200">
-                        {/* Open Files Section (No Scroll) */}
+                    
                         <div className="files flex gap-2">
                             {openFiles.map((file, index) => (
                                 <div key={index} className="flex items-center gap-2">
@@ -319,7 +318,7 @@ const Project = () => {
                                 </div>
                             ))}
                         </div>
-                        {/* Static Copy and Run Buttons */}
+                      
                         <div className="actions flex gap-2">
                             <button
                                 onClick={() => {
@@ -360,7 +359,7 @@ const Project = () => {
                         </div>
                     </div>
     
-                    {/* Code Editor Area */}
+           
                     <div className="bottom flex flex-grow max-w-full shrink overflow-auto">
                         {fileTree[currentFile] && (
                             <div className="code-editor-area h-full overflow-auto flex-grow bg-slate-50">
@@ -395,7 +394,7 @@ const Project = () => {
                     </div>
                 </div>
     
-                {/* Iframe Preview */}
+               
                 {iframeUrl && webContainer && (
                     <div className="flex min-w-96 flex-col h-full bg-white shadow-lg">
                         <div className="address-bar p-2 bg-slate-100 border-b border-slate-200">
